@@ -1,0 +1,93 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.traefik.namespace }}
+  project: default
+  source:
+    repoURL: https://traefik.github.io/charts
+    targetRevision: "v27.0.0"
+    chart: traefik
+    helm:
+      valuesObject:
+        logs:
+          general:
+            level: DEBUG
+        ports:
+          web:
+            redirectTo:
+              port: websecure
+          websecure:
+            tls:
+              enabled: true
+              certResolver: cloudflare
+        server:
+          service:
+            type: "LoadBalancer"
+        ingressRoute:
+          dashboard:
+            enabled: false
+        persistence:
+          enabled: true
+          name: data
+          path: /data
+          size: 1Gi
+        ingressClass:
+          enabled: true
+          isDefaultClass: true
+        deployment:
+          initContainers:
+            - name: volume-permissions
+              image: traefik:v2.10.4
+              command:
+                [
+                  "sh",
+                  "-c",
+                  "touch /data/acme.json; chown 65532 /data/acme.json; chmod -v 600 /data/acme.json",
+                ]
+              securityContext:
+                runAsNonRoot: false
+                runAsGroup: 0
+                runAsUser: 0
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+        additionalArguments:
+          - "--certificatesresolvers.cloudflare.acme.dnsChallenge=true"
+          - "--certificatesResolvers.cloudflare.acme.dnsChallenge.provider=cloudflare"
+          - "--certificatesResolvers.cloudflare.acme.email=eric@aceshome.com"
+          - "--certificatesResolvers.cloudflare.acme.dnsChallenge.resolvers=1.1.1.1"
+          - "--certificatesResolvers.cloudflare.acme.storage=/data/acme.json"
+          - "--serversTransport.insecureSkipVerify=true"
+          - "--entryPoints.web.proxyProtocol.insecure"
+          - "--entryPoints.web.forwardedHeaders.insecure"
+          - "--entryPoints.websecure.proxyProtocol.insecure"
+          - "--entryPoints.websecure.forwardedHeaders.insecure"
+          - "--entrypoints.websecure.transport.respondingtimeouts.idletimeout=60"
+          - "--entrypoints.websecure.transport.respondingtimeouts.readtimeout=60"
+          - "--entrypoints.websecure.transport.respondingtimeouts.writetimeout=60"
+          - "--providers.kubernetesingress.ingressendpoint.publishedservice=traefik/traefik"
+        env:
+          - name: CF_API_EMAIL
+            valueFrom:
+              secretKeyRef:
+                key: CF_API_EMAIL
+                name:  cloudflare-credentials
+          - name: CF_DNS_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: CF_DNS_API_TOKEN
+                name:  cloudflare-credentials
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
