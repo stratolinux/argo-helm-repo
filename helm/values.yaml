@@ -8,10 +8,4 @@ prometheus:
     hosts: ["your.host.name"]
   namespace: kube-prometheus-stack
   adminPassword: "adminpassword"
-traefik:
-  loadBalancerIP: 0.0.0.0
-  namespace: traefik
-  cloudflare:
-    cf_api_email: cf_api_email
-    cf_dns_api_token: cf_dns_api_token
 
