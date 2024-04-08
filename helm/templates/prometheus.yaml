@@ -8,7 +8,7 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: kube-prometheus-stack
+    namespace: {{ .Values.prometheus.namespace }}
   project: default
   source:
     repoURL: https://prometheus-community.github.io/helm-charts
@@ -17,10 +17,10 @@ spec:
     helm:
       valuesObject:
         grafana:
-          adminPassword: "password"
+          adminPassword: {{ .Values.prometheus.adminPassword }}
           ingress:
-            enabled: true
-            hosts: ["grafana.k8s.stratolinux.io"]
+            enabled: {{ .Values.prometheus.ingress.enabled }}
+            hosts: {{ .Values.prometheus.ingress.hosts }}
           # Provision grafana-dashboards-kubernetes
           dashboardProviders:
             dashboardproviders.yaml:

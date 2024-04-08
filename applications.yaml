@@ -14,6 +14,14 @@ spec:
     path: helm
     repoURL: https://github.com/stratolinux/argo-helm-repo.git
     targetRevision: HEAD
+    helm:
+      valuesObject:
+        prometheus:
+          ingress:
+            enabled: true
+            hosts: ["grafana.k8s.stratolinux.io"]
+          namespace: kube-prometheus-stack
+          adminPassword: password 
   syncPolicy:
     automated:
       prune: true

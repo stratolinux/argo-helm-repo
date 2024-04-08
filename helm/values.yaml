@@ -5,7 +5,7 @@
 prometheus:
   ingress:
     enabled: true
-    hosts: foo.com
+    hosts: ["foo.com"]
   namespace: kube-prometheus-stack
   adminPassword: password
 
