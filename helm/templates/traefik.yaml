@@ -30,8 +30,7 @@ spec:
         server:
           service:
             type: "LoadBalancer"
-            spec:
-              loadBalancerIP: {{ .Values.traefik.loadBalancerIP }}
+            externalIPs: [{{ .Values.traefik.loadBalancerIP }}]
         ingressRoute:
           dashboard:
             enabled: false
