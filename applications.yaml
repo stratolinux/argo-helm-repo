@@ -19,9 +19,9 @@ spec:
         prometheus:
           ingress:
             enabled: true
-            hosts: ["grafana.k8s.stratolinux.io"]
+            hosts: ["your.host.name"]
           namespace: kube-prometheus-stack
-          adminPassword: password 
+          adminPassword: "adminpassword"
   syncPolicy:
     automated:
       prune: true
