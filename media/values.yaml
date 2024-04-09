@@ -1,0 +1,19 @@
+# Default values
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+environment: production
+replication:
+  enabled: true
+  restic_repository: "s3:http://minio.local:9000"
+  restic_password: "restic_password"
+  aws_access_key_id: "aws_access_key_id"
+  aws_secret_access_key: "aws_secret_access_key"
+navidrome:
+  ingress:
+    enabled: true
+    host: "your.host.name"
+  namespace: media
+  mediaPVC: "media-pvc-must-exist"
+  configPVC: "config-pvc-will-create-if-needed"
+

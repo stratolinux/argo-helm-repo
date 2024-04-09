@@ -1,0 +1,151 @@
+---
+# namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.navidrome.namespace }}
+  annotations:
+    volsync.backube/privileged-movers: "true"
+---
+# config Replication Bucket
+apiVersion: minio.crossplane.io/v1
+kind: Bucket
+metadata:
+  name: {{ .Values.environment }}-{{ .Values.navidrome.namespace }}-navidrome-config
+  namespace: {{ .Values.navidrome.namespace }}
+spec:
+  deletionPolicy: Orphan
+  forProvider: {}
+  providerConfigRef:
+    name: provider-minio
+---
+# config Replication Secret
+apiVersion: v1
+kind: Secret
+type: Opaque             
+metadata:
+  name: navidrome-bucket-config
+  namespace: {{ .Values.navidrome.namespace }}
+stringData:
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.environment }}-{{ .Values.navidrome.namespace }}-navidrome-config
+  RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
+  AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
+---
+# config ReplicationDestination
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: navidrome-config-replication-destination
+  namespace: {{ .Values.navidrome.namespace }}
+spec:
+  trigger:
+    # manual restore
+    manual: "seed-volume-from-backup"
+  restic:
+    # Name of the Secret with the connection information
+    repository: navidrome-bucket-config
+    capacity: 5Gi
+    copyMethod: Snapshot
+    storageClassName: ceph-block
+    volumeSnapshotClassName: ceph-block
+    accessModes:
+      - ReadWriteOnce
+---
+# config ReplicationSource
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: navidrome-config-replication-source
+  namespace: {{ .Values.navidrome.namespace }}
+spec:
+  # The PVC to be backed up
+  sourcePVC: {{ .Values.navidrome.configPVC }}
+  trigger:
+    # Take a backup per cron schedule
+    schedule: "0 */2 * * *"
+  restic:
+    # Prune the repository (repack to free space) every 2 weeks
+    pruneIntervalDays: 14
+    # Name of the Secret with the connection information
+    repository: navidrome-bucket-config
+    # Retention policy for backups
+    retain:
+      hourly: 2
+      daily: 2
+      weekly: 2
+      monthly: 2
+      yearly: 1
+    # just in case it was locked
+    unlock: unlock-me
+    # Snap the source volume prior to taking a backup to ensure a
+    # point-in-time image.
+    copyMethod: Snapshot
+    # The VSC to use if the copy method is Snapshot (default if omitted)
+    volumeSnapshotClassName: ceph-block
+---
+# config PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.navidrome.configPVC }}
+  namespace: {{ .Values.navidrome.namespace }}
+spec:
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce
+  dataSourceRef:
+    kind: ReplicationDestination
+    apiGroup: volsync.backube
+    name: navidrome-config-replication-destination
+  resources:
+    requests:
+      storage: 5Gi
+---
+# Navidrome helm chart application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: navidrome
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.navidrome.namespace }}
+  project: default
+  source:
+    repoURL: https://0xemma.github.io/helm-charts
+    targetRevision: "0.0.6"
+    chart: navidrome
+    helm:
+      valuesObject:
+        ingress:
+          main:
+            enabled: {{ .Values.navidrome.ingress.enabled }}
+            hosts:
+              - host: {{ .Values.navidrome.ingress.host }}
+        persistence:
+          config:
+            enabled: true
+            type: persistentVolumeClaim
+            existingClaim: {{ .Values.navidrome.configPVC }}
+            mountpath: /data
+          music:
+            enabled: true
+            type: persistentVolumeClaim
+            existingClaim: {{ .Values.navidrome.mediaPVC }}
+            mountPath: /music
+        env:
+          ND_SCANSCHEDULE: 1h
+          ND_LOGLEVEL: info
+          ND_SESSIONTIMEOUT: 24h
+          ND_BASEURL: ""
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
