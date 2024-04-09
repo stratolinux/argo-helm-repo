@@ -141,7 +141,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  namespace: default
+  namespace: {{ .Values.navidrome.namespace }}
   name: navidrome-media-claim
 spec:
   storageClassName: manual
