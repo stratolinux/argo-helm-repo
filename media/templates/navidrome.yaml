@@ -130,7 +130,7 @@ spec:
     readOnly: false
     # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
     # make sure this value is unique for every share in the cluster
-    volumeHandle: {{ .Values/navidrome.mediaShare }}##
+    volumeHandle: {{ .Values.navidrome.mediaShare }}##
     volumeAttributes:
       source: //{{ .Values.navidrome.mediaShare }}
     nodeStageSecretRef:
