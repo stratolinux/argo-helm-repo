@@ -196,12 +196,11 @@ spec:
                 port: 6969
         ingress:
           app:
-            enabled: {{ .Values.whisparr.ingress.enabled }}
             hosts:
               - host: {{ .Values.whisparr.ingress.host }}
                 paths:
                   - path: /
-                    pathType: Prefix
+                    identifier: app
                     service:
                       port: 6969
         persistence:
