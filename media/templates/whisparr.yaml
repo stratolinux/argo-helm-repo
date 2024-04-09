@@ -210,7 +210,7 @@ spec:
             existingClaim: {{ .Values.whisparr.configPVC }}
             globalMounts:
               - path: /data
-          music:
+          data:
             enabled: true
             existingClaim: whisparr-media-claim
             globalMounts:
