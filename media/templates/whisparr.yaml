@@ -203,7 +203,7 @@ spec:
                   - path: /
                     pathType: Prefix
                     service: 
-                      name: app
+                      name: whisparr
                       port: 6969
         persistence:
           config:
