@@ -7,6 +7,7 @@ metadata:
   annotations:
     volsync.backube/privileged-movers: "true"
 ---
+{{ if .Values.replication.enabled }}
 # config Replication Bucket
 apiVersion: minio.crossplane.io/v1
 kind: Bucket
@@ -18,8 +19,10 @@ spec:
   forProvider: {}
   providerConfigRef:
     name: provider-minio
+{{ end }}
 ---
 # config Replication Secret
+{{ if .Values.replication.enabled }}
 apiVersion: v1
 kind: Secret
 type: Opaque             
@@ -31,8 +34,10 @@ stringData:
   RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
   AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
   AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
+{{ end }}
 ---
 # config ReplicationDestination
+{{ if .Values.replication.enabled }}
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
@@ -51,8 +56,10 @@ spec:
     volumeSnapshotClassName: ceph-block
     accessModes:
       - ReadWriteOnce
+{{ end }}
 ---
 # config ReplicationSource
+{{ if .Values.replication.enabled }}
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
@@ -83,6 +90,7 @@ spec:
     copyMethod: Snapshot
     # The VSC to use if the copy method is Snapshot (default if omitted)
     volumeSnapshotClassName: ceph-block
+{{ end }}
 ---
 # config PVC
 apiVersion: v1
@@ -94,10 +102,12 @@ spec:
   storageClassName: ceph-block
   accessModes:
     - ReadWriteOnce
+{{ if .Values.replication.enabled }}
   dataSourceRef:
     kind: ReplicationDestination
     apiGroup: volsync.backube
     name: navidrome-config-replication-destination
+{{ end }}
   resources:
     requests:
       storage: 5Gi
