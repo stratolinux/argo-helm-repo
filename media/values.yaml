@@ -12,11 +12,20 @@ replication:
 navidrome:
   ingress:
     enabled: true
-    host: "your.host.name"
+    host: "navidrome.local"
   namespace: media
   media:
-    share: "//smb.servcer.name/share"
+    share: "//smb.server.name/share"
     secret: "name-of-secret-with-creds"
     secretNamespace: "namespace-holding-secret"
   configPVC: "config-pvc-will-create-if-needed"
-
+whisparr:
+  ingress:
+    enabled: true
+    host: "whisparr.local"
+  namespace: media
+  media:
+    share: "//smb.server.name/share"
+    secret: "name-of-secret-with-creds"
+    secretNamespace: "namespace-holding-secret"
+  configPVC: "config-pvc-will-create-if-needed"

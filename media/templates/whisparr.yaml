@@ -1,0 +1,227 @@
+---
+# namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.whisparr.namespace }}
+  annotations:
+    volsync.backube/privileged-movers: "true"
+---
+# config Replication Bucket
+{{ if .Values.replication.enabled }}
+apiVersion: minio.crossplane.io/v1
+kind: Bucket
+metadata:
+  name: {{ .Values.environment }}-{{ .Values.whisparr.namespace }}-whisparr-config
+  namespace: {{ .Values.whisparr.namespace }}
+spec:
+  deletionPolicy: Orphan
+  forProvider: {}
+  providerConfigRef:
+    name: provider-minio
+{{ end }}
+---
+# config Replication Secret
+{{ if .Values.replication.enabled }}
+apiVersion: v1
+kind: Secret
+type: Opaque             
+metadata:
+  name: whisparr-bucket-config
+  namespace: {{ .Values.whisparr.namespace }}
+stringData:
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.environment }}-{{ .Values.whisparr.namespace }}-whisparr-config
+  RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
+  AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
+{{ end }}
+---
+# config ReplicationDestination
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: whisparr-config-replication-destination
+  namespace: {{ .Values.whisparr.namespace }}
+spec:
+  trigger:
+    # manual restore
+    manual: "seed-volume-from-backup"
+  restic:
+    # Name of the Secret with the connection information
+    repository: whisparr-bucket-config
+    capacity: 5Gi
+    copyMethod: Snapshot
+    storageClassName: ceph-block
+    volumeSnapshotClassName: ceph-block
+    accessModes:
+      - ReadWriteOnce
+{{ end }}
+---
+# config ReplicationSource
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: whisparr-config-replication-source
+  namespace: {{ .Values.whisparr.namespace }}
+spec:
+  # The PVC to be backed up
+  sourcePVC: {{ .Values.whisparr.configPVC }}
+  trigger:
+    # Take a backup per cron schedule
+    schedule: "0 */2 * * *"
+  restic:
+    # Prune the repository (repack to free space) every 2 weeks
+    pruneIntervalDays: 14
+    # Name of the Secret with the connection information
+    repository: whisparr-bucket-config
+    # Retention policy for backups
+    retain:
+      hourly: 2
+      daily: 2
+      weekly: 2
+      monthly: 2
+      yearly: 1
+    # just in case it was locked
+    unlock: unlock-me
+    # Snap the source volume prior to taking a backup to ensure a
+    # point-in-time image.
+    copyMethod: Snapshot
+    # The VSC to use if the copy method is Snapshot (default if omitted)
+    volumeSnapshotClassName: ceph-block
+{{ end }}
+---
+# config PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.whisparr.configPVC }}
+  namespace: {{ .Values.whisparr.namespace }}
+spec:
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce
+{{ if .Values.replication.enabled }}
+  dataSourceRef:
+    kind: ReplicationDestination
+    apiGroup: volsync.backube
+    name: whisparr-config-replication-destination
+{{ end }}
+  resources:
+    requests:
+      storage: 5Gi
+---
+# PV for media share
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
+  name: whisparr-media-share
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=1000
+    - gid=1000
+    - noperm
+    - mfsymlinks
+    - cache=strict
+    - noserverino  # required to prevent data corruption
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
+    # make sure this value is unique for every share in the cluster
+    volumeHandle: {{ .Values.whisparr.media.share }}##
+    volumeAttributes:
+      source: //{{ .Values.whisparr.media.share }}
+    nodeStageSecretRef:
+      name: {{ .Values.whisparr.media.secret }}
+      namespace: {{ .Values.whisparr.media.secretNamespace }}
+---
+### Claim for media share
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ .Values.whisparr.namespace }}
+  name: whisparr-media-claim
+spec:
+  storageClassName: manual
+  volumeName: whisparr-media-share
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+---
+# whisparr helm chart application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: whisparr
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.whisparr.namespace }}
+  project: default
+  source:
+    repoURL: https://bjw-s.github.io/helm-charts
+    targetRevision: "0.0.6"
+    chart: apps-template
+    helm:
+      valuesObject:
+        controllers:
+          whisparr:
+            containers:
+              app:
+                image:
+                  repository: ghcr.io/hotio/whisparr
+                  tag: latest
+        service:
+          app:
+            controller: whisparr
+            ports:
+              http:
+                port: 6969
+        ingress:
+          main:
+            enabled: {{ .Values.whisparr.ingress.enabled }}
+            hosts:
+              - host: {{ .Values.whisparr.ingress.host }}
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    service:
+                      port: 6969
+        persistence:
+          config:
+            enabled: true
+            existingClaim: {{ .Values.whisparr.configPVC }}
+            mountpath: /data
+          music:
+            enabled: true
+            existingClaim: whisparr-media-claim
+            mountPath: /music
+        env:
+          ND_SCANSCHEDULE: 1h
+          ND_LOGLEVEL: info
+          ND_SESSIONTIMEOUT: 24h
+          ND_BASEURL: ""
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
