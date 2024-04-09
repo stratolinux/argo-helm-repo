@@ -195,7 +195,7 @@ spec:
               http:
                 port: 6969
         ingress:
-          main:
+          app:
             enabled: {{ .Values.whisparr.ingress.enabled }}
             hosts:
               - host: {{ .Values.whisparr.ingress.host }}
