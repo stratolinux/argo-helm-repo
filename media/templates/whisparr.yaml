@@ -147,6 +147,56 @@ spec:
       name: {{ .Values.whisparr.media.secret }}
       namespace: {{ .Values.whisparr.media.secretNamespace }}
 ---
+# PV for servies share
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
+  name: whisparr-services-share
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=1000
+    - gid=1000
+    - noperm
+    - mfsymlinks
+    - cache=strict
+    - noserverino  # required to prevent data corruption
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
+    # make sure this value is unique for every share in the cluster
+    volumeHandle: {{ .Values.whisparr.services.share }}##
+    volumeAttributes:
+      source: //{{ .Values.whisparr.services.share }}
+    nodeStageSecretRef:
+      name: {{ .Values.whisparr.services.secret }}
+      namespace: {{ .Values.whisparr.services.secretNamespace }}
+---
+### Claim for services share
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ .Values.whisparr.namespace }}
+  name: whisparr-services-claim
+spec:
+  storageClassName: manual
+  volumeName: whisparr-services-share
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+---
 ### Claim for media share
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -210,12 +260,17 @@ spec:
             enabled: true
             existingClaim: {{ .Values.whisparr.configPVC }}
             globalMounts:
-              - path: /data
+              - path: /config
+          services:
+            enabled: true
+            existingClaim: whisparr-services-claim
+            globalMounts:
+              - path: /services
           data:
             enabled: true
             existingClaim: whisparr-media-claim
             globalMounts:
-              - path: /media
+              - path: /data
         env:
           ND_SCANSCHEDULE: 1h
           ND_LOGLEVEL: info
