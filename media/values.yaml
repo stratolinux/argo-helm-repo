@@ -14,6 +14,9 @@ navidrome:
     enabled: true
     host: "your.host.name"
   namespace: media
-  mediaShare: "//asustor.internal.aceshome.com/media"
+  media:
+    share: "//smb.servcer.name/share"
+    secret: "name-of-secret-with-creds"
+    secretNamespace: "namespace-holding-secret"
   configPVC: "config-pvc-will-create-if-needed"
 

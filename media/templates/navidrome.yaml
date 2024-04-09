@@ -130,12 +130,12 @@ spec:
     readOnly: false
     # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
     # make sure this value is unique for every share in the cluster
-    volumeHandle: {{ .Values.navidrome.mediaShare }}##
+    volumeHandle: {{ .Values.navidrome.media.share }}##
     volumeAttributes:
-      source: //{{ .Values.navidrome.mediaShare }}
+      source: //{{ .Values.navidrome.media.share }}
     nodeStageSecretRef:
-      name: asustor-share-creds
-      namespace: default
+      name: {{ .Values.navidrome.media.secret }}
+      namespace: {{ .Values.navidrome.media.secretNamespace }}
 ---
 ### Claim for media share
 apiVersion: v1
