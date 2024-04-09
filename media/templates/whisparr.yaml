@@ -208,11 +208,13 @@ spec:
           config:
             enabled: true
             existingClaim: {{ .Values.whisparr.configPVC }}
-            mountpath: /data
+            globalMounts:
+              - path: /data
           music:
             enabled: true
             existingClaim: whisparr-media-claim
-            mountPath: /music
+            globalMounts:
+              - path: /data
         env:
           ND_SCANSCHEDULE: 1h
           ND_LOGLEVEL: info
