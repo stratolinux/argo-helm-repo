@@ -7,8 +7,8 @@ metadata:
   annotations:
     volsync.backube/privileged-movers: "true"
 ---
-{{ if .Values.replication.enabled }}
 # config Replication Bucket
+{{ if .Values.replication.enabled }}
 apiVersion: minio.crossplane.io/v1
 kind: Bucket
 metadata:
