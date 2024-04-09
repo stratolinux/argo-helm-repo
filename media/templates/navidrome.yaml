@@ -129,12 +129,10 @@ spec:
         persistence:
           config:
             enabled: true
-            type: persistentVolumeClaim
             existingClaim: {{ .Values.navidrome.configPVC }}
             mountpath: /data
           music:
             enabled: true
-            type: persistentVolumeClaim
             existingClaim: {{ .Values.navidrome.mediaPVC }}
             mountPath: /music
         env:
