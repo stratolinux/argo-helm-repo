@@ -126,6 +126,11 @@ spec:
             enabled: {{ .Values.navidrome.ingress.enabled }}
             hosts:
               - host: {{ .Values.navidrome.ingress.host }}
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    service:
+                      port: http
         persistence:
           config:
             enabled: true
