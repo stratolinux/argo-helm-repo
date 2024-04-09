@@ -200,7 +200,6 @@ spec:
               - host: {{ .Values.whisparr.ingress.host }}
                 paths:
                   - path: /
-                    identifier: app
                     service:
                       port: 6969
         persistence:
