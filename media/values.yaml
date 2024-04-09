@@ -14,6 +14,6 @@ navidrome:
     enabled: true
     host: "your.host.name"
   namespace: media
-  mediaPVC: "media-pvc-must-exist"
+  mediaShare: "//asustor.internal.aceshome.com/media"
   configPVC: "config-pvc-will-create-if-needed"
 

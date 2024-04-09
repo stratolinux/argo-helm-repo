@@ -102,6 +102,56 @@ spec:
     requests:
       storage: 5Gi
 ---
+# PV for media share
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
+  name: navidrome-media-share
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=1000
+    - gid=1000
+    - noperm
+    - mfsymlinks
+    - cache=strict
+    - noserverino  # required to prevent data corruption
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
+    # make sure this value is unique for every share in the cluster
+    volumeHandle: "{{ .Values/navidrome.mediaShare }}##"
+    volumeAttributes:
+      source: "//{{ .Values.navidrome.mediaShare }}"
+    nodeStageSecretRef:
+      name: asustor-share-creds
+      namespace: default
+---
+### Claim for media share
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: default
+  name: navidrome-media-claim
+spec:
+  storageClassName: manual
+  volumeName: navidrome-media-share
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+---
 # Navidrome helm chart application
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -138,7 +188,7 @@ spec:
             mountpath: /data
           music:
             enabled: true
-            existingClaim: {{ .Values.navidrome.mediaPVC }}
+            existingClaim: navidrome-media-claim
             mountPath: /music
         env:
           ND_SCANSCHEDULE: 1h
