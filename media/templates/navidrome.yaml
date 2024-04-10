@@ -206,14 +206,16 @@ spec:
                       name: navidrome
                       port: 4533
         persistence:
-          config:
+          data:
             enabled: true
             existingClaim: {{ .Values.navidrome.configPVC }}
-            mountpath: /data
+            globalMounts:
+              - path: /data
           music:
             enabled: true
             existingClaim: navidrome-media-claim
-            mountPath: /music
+            globalMounts:
+              - path: /music
         env:
           ND_SCANSCHEDULE: 1h
           ND_LOGLEVEL: info
