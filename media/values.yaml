@@ -10,6 +10,7 @@ replication:
   aws_access_key_id: "aws_access_key_id"
   aws_secret_access_key: "aws_secret_access_key"
 navidrome:
+  enabled: true
   ingress:
     enabled: true
     host: "navidrome.local"
@@ -19,7 +20,15 @@ navidrome:
     secret: "name-of-secret-with-creds"
     secretNamespace: "namespace-holding-secret"
   configPVC: "config-pvc-will-create-if-needed"
+posterr:
+  enabled: true
+  ingress:
+    enabled: true
+    host: "posterr.local"
+  namespace: media
+  configPVC: "config-pvc-will-create-if-needed"
 whisparr:
+  enabled: true
   ingress:
     enabled: true
     host: "whisparr.local"

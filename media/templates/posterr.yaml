@@ -1,3 +1,4 @@
+{{ if .Values.posterr.enabled }}
 ---
 # namespace
 apiVersion: v1
@@ -177,3 +178,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+{{ end }}

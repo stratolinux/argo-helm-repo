@@ -1,3 +1,4 @@
+{{ if .Values.whisparr.enabled }}
 ---
 # namespace
 apiVersion: v1
@@ -282,3 +283,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+{{ end }}
