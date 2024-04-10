@@ -1,0 +1,179 @@
+---
+# namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.posterr.namespace }}
+  annotations:
+    volsync.backube/privileged-movers: "true"
+---
+# config Replication Bucket
+{{ if .Values.replication.enabled }}
+apiVersion: minio.crossplane.io/v1
+kind: Bucket
+metadata:
+  name: {{ .Values.environment }}-{{ .Values.posterr.namespace }}-posterr-config
+  namespace: {{ .Values.posterr.namespace }}
+spec:
+  deletionPolicy: Orphan
+  forProvider: {}
+  providerConfigRef:
+    name: provider-minio
+{{ end }}
+---
+# config Replication Secret
+{{ if .Values.replication.enabled }}
+apiVersion: v1
+kind: Secret
+type: Opaque             
+metadata:
+  name: posterr-bucket-config
+  namespace: {{ .Values.posterr.namespace }}
+stringData:
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.environment }}-{{ .Values.posterr.namespace }}-posterr-config
+  RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
+  AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
+{{ end }}
+---
+# config ReplicationDestination
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: posterr-config-replication-destination
+  namespace: {{ .Values.posterr.namespace }}
+spec:
+  trigger:
+    # manual restore
+    manual: "seed-volume-from-backup"
+  restic:
+    # Name of the Secret with the connection information
+    repository: posterr-bucket-config
+    capacity: 5Gi
+    copyMethod: Snapshot
+    storageClassName: ceph-block
+    volumeSnapshotClassName: ceph-block
+    accessModes:
+      - ReadWriteOnce
+{{ end }}
+---
+# config ReplicationSource
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: posterr-config-replication-source
+  namespace: {{ .Values.posterr.namespace }}
+spec:
+  # The PVC to be backed up
+  sourcePVC: {{ .Values.posterr.configPVC }}
+  trigger:
+    # Take a backup per cron schedule
+    schedule: "0 */2 * * *"
+  restic:
+    # Prune the repository (repack to free space) every 2 weeks
+    pruneIntervalDays: 14
+    # Name of the Secret with the connection information
+    repository: posterr-bucket-config
+    # Retention policy for backups
+    retain:
+      hourly: 2
+      daily: 2
+      weekly: 2
+      monthly: 2
+      yearly: 1
+    # just in case it was locked
+    unlock: unlock-me
+    # Snap the source volume prior to taking a backup to ensure a
+    # point-in-time image.
+    copyMethod: Snapshot
+    # The VSC to use if the copy method is Snapshot (default if omitted)
+    volumeSnapshotClassName: ceph-block
+{{ end }}
+---
+# config PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.posterr.configPVC }}
+  namespace: {{ .Values.posterr.namespace }}
+spec:
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce
+{{ if .Values.replication.enabled }}
+  dataSourceRef:
+    kind: ReplicationDestination
+    apiGroup: volsync.backube
+    name: posterr-config-replication-destination
+{{ end }}
+  resources:
+    requests:
+      storage: 5Gi
+---
+# posterr helm chart application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: posterr
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.posterr.namespace }}
+  project: default
+  source:
+    repoURL: https://bjw-s.github.io/helm-charts
+    targetRevision: "3.1.0"
+    chart: app-template
+    helm:
+      valuesObject:
+        controllers:
+          posterr:
+            containers:
+              app:
+                image:
+                  repository: petersem/posterr
+                  tag: latest
+        service:
+          app:
+            controller: posterr
+            ports:
+              http:
+                port: 5055
+        ingress:
+          app:
+            enabled: {{ .Values.posterr.ingress.enabled }}
+            hosts:
+              - host: {{ .Values.posterr.ingress.host }}
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    service: 
+                      name: posterr
+                      port: 5055
+        persistence:
+          config:
+            enabled: true
+            existingClaim: {{ .Values.posterr.configPVC }}
+            globalMounts:
+              - path: /usr/src/app/config
+        env:
+          ND_SCANSCHEDULE: 1h
+          ND_LOGLEVEL: info
+          ND_SESSIONTIMEOUT: 24h
+          ND_BASEURL: ""
+        autoscaling:
+          enabled: false
+          minReplicas: 1
+          maxReplicas: 1
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
