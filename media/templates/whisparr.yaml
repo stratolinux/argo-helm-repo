@@ -246,7 +246,7 @@ spec:
                 port: 6969
         ingress:
           app:
-            enabled: true
+            enabled: {{ .Values.whisparr.ingress.enabled }}
             hosts:
               - host: {{ .Values.whisparr.ingress.host }}
                 paths:
@@ -271,11 +271,6 @@ spec:
             existingClaim: whisparr-media-claim
             globalMounts:
               - path: /data
-        env:
-          ND_SCANSCHEDULE: 1h
-          ND_LOGLEVEL: info
-          ND_SESSIONTIMEOUT: 24h
-          ND_BASEURL: ""
   syncPolicy:
     automated:
       prune: true

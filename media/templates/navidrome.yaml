@@ -176,20 +176,34 @@ spec:
     namespace: {{ .Values.navidrome.namespace }}
   project: default
   source:
-    repoURL: https://0xemma.github.io/helm-charts
-    targetRevision: "0.0.6"
-    chart: navidrome
+    repoURL: https://bjw-s.github.io/helm-charts
+    targetRevision: "3.1.0"
+    chart: app-template
     helm:
       valuesObject:
+        controllers:
+          navidrome:
+            containers:
+              app:
+                image:
+                  repository: deluan/navidrome
+                  tag: "0.51.1"
+        service:
+          app:
+            controller: navidrome
+            ports:
+              http:
+                port: 4533
         ingress:
-          main:
+          app:
             enabled: {{ .Values.navidrome.ingress.enabled }}
             hosts:
               - host: {{ .Values.navidrome.ingress.host }}
                 paths:
                   - path: /
                     pathType: Prefix
-                    service:
+                    service: 
+                      name: navidrome
                       port: 4533
         persistence:
           config:
