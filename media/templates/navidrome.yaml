@@ -221,6 +221,10 @@ spec:
           ND_LOGLEVEL: info
           ND_SESSIONTIMEOUT: 24h
           ND_BASEURL: ""
+        autoscaling:
+          enabled: false
+          minReplicas: 1
+          maxReplicas: 1
   syncPolicy:
     automated:
       prune: true
