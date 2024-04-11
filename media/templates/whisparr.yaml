@@ -219,8 +219,6 @@ kind: Application
 metadata:
   name: whisparr
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     name: in-cluster

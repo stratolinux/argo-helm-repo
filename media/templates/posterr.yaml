@@ -119,8 +119,6 @@ kind: Application
 metadata:
   name: posterr
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     name: in-cluster
