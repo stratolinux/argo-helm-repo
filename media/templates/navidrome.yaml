@@ -71,7 +71,7 @@ spec:
   sourcePVC: {{ .Values.navidrome.configPVC }}
   trigger:
     # Take a backup per cron schedule
-    schedule: "0 */2 * * *"
+    schedule: {{ .Values.navidrome.replicationSchedule }}
   restic:
     # Prune the repository (repack to free space) every 2 weeks
     pruneIntervalDays: 14

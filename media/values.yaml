@@ -17,6 +17,7 @@ navidrome:
   enabled: true
   image: "deluan/navidrome"
   version: "0.51.1"
+  replicationSchedule: "0 * * * *"
   ingress:
     enabled: true
     host: "navidrome.local"
@@ -32,6 +33,7 @@ posterr:
   enabled: true
   image: "petersem/posterr"
   version: "latest"
+  replicationSchedule: "0 * * * *"
   ingress:
     enabled: true
     host: "posterr.local"
@@ -43,6 +45,7 @@ whisparr:
   enabled: true
   image: "ghcr.io/hotio/whisparr"
   version: "latest"
+  replicationSchedule: "0 * * * *"
   ingress:
     enabled: true
     host: "whisparr.local"
@@ -62,6 +65,7 @@ audiobookshelf:
   enabled: true
   image: "ghcr.io/advplyr/audiobookshelf"
   version: "2.8.1"
+  replicationSchedule: "0 * * * *"
   ingress:
     enabled: true
     host: "audiobookshelf.local"
