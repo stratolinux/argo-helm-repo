@@ -61,7 +61,7 @@ whisparr:
 audiobookshelf:
   enabled: true
   image: "ghcr.io/advplyr/audiobookshelf"
-  version: "v2.8.1"
+  version: "2.8.1"
   ingress:
     enabled: true
     host: "audiobookshelf.local"
