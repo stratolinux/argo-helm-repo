@@ -185,8 +185,8 @@ spec:
             containers:
               app:
                 image:
-                  repository: deluan/navidrome
-                  tag: "0.51.1"
+                  repository: {{ .Values.navidrome.image }}
+                  tag: {{ .Values.navidrome.version }}
         service:
           app:
             controller: navidrome

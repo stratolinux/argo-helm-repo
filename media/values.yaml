@@ -3,14 +3,20 @@
 # Declare variables to be passed into your templates.
 
 environment: production
+
+# replication settings, identical for all services
 replication:
   enabled: true
   restic_repository: "s3:http://minio.local:9000"
   restic_password: "restic_password"
   aws_access_key_id: "aws_access_key_id"
   aws_secret_access_key: "aws_secret_access_key"
+
+# navidrome 
 navidrome:
   enabled: true
+  image: "deluan/navidrome"
+  version: "0.51.1"
   ingress:
     enabled: true
     host: "navidrome.local"
@@ -20,15 +26,23 @@ navidrome:
     secret: "name-of-secret-with-creds"
     secretNamespace: "namespace-holding-secret"
   configPVC: "config-pvc-will-create-if-needed"
+
+# posterr
 posterr:
   enabled: true
+  image: "petersem/posterr"
+  version: "latest"
   ingress:
     enabled: true
     host: "posterr.local"
   namespace: media
   configPVC: "config-pvc-will-create-if-needed"
+
+# whisparr
 whisparr:
   enabled: true
+  image: "ghcr.io/hotio/whisparr"
+  version: "latest"
   ingress:
     enabled: true
     host: "whisparr.local"
@@ -42,8 +56,12 @@ whisparr:
     secret: "name-of-secret-with-creds2"
     secretNamespace: "namespace-holding-secret2"
   configPVC: "config-pvc-will-create-if-needed"
+
+# audiobookshelf
 audiobookshelf:
   enabled: true
+  image: "ghcr.io/advplyr/audiobookshelf"
+  version: "v2.8.1"
   ingress:
     enabled: true
     host: "audiobookshelf.local"

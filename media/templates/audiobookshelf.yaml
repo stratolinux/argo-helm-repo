@@ -341,8 +341,8 @@ spec:
             containers:
               app:
                 image:
-                  repository: ghcr.io/advplyr/audiobookshelf
-                  tag: "v2.8.1"
+                  repository: {{ .Values.audiobookshelf.image }}
+                  tag: {{ .Values.audiobookshelf.version }}
         service:
           app:
             controller: audiobookshelf

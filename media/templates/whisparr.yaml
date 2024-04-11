@@ -235,8 +235,8 @@ spec:
             containers:
               app:
                 image:
-                  repository: ghcr.io/hotio/whisparr
-                  tag: latest
+                  repository: {{ .Values.whisparr.image }}
+                  tag: {{ .Values.whisparr.version }}
         service:
           app:
             controller: whisparr

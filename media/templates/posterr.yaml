@@ -135,8 +135,8 @@ spec:
             containers:
               app:
                 image:
-                  repository: petersem/posterr
-                  tag: latest
+                  repository: {{ .Values.posterr.image }}
+                  tag: {{ .Values.posterr.version }}
         service:
           app:
             controller: posterr
