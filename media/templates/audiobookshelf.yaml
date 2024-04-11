@@ -219,13 +219,13 @@ spec:
     requests:
       storage: 5Gi
 ---
-# PV for media share
+# PV for books share
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   annotations:
     pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
-  name: audiobookshelf-media-share
+  name: audiobookshelf-books-share
 spec:
   capacity:
     storage: 100Gi
@@ -247,22 +247,72 @@ spec:
     readOnly: false
     # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
     # make sure this value is unique for every share in the cluster
-    volumeHandle: {{ .Values.audiobookshelf.media.share }}##
+    volumeHandle: {{ .Values.audiobookshelf.books.share }}##
     volumeAttributes:
-      source: //{{ .Values.audiobookshelf.media.share }}
+      source: //{{ .Values.audiobookshelf.books.share }}
     nodeStageSecretRef:
-      name: {{ .Values.audiobookshelf.media.secret }}
-      namespace: {{ .Values.audiobookshelf.media.secretNamespace }}
+      name: {{ .Values.audiobookshelf.books.secret }}
+      namespace: {{ .Values.audiobookshelf.books.secretNamespace }}
 ---
-### Claim for media share
+### Claim for books share
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   namespace: {{ .Values.audiobookshelf.namespace }}
-  name: audiobookshelf-media-claim
+  name: audiobookshelf-books-claim
 spec:
   storageClassName: manual
-  volumeName: audiobookshelf-media-share
+  volumeName: audiobookshelf-books-share
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+---
+# PV for podcasts share
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
+  name: audiobookshelf-podcasts-share
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=1000
+    - gid=1000
+    - noperm
+    - mfsymlinks
+    - cache=strict
+    - noserverino  # required to prevent data corruption
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
+    # make sure this value is unique for every share in the cluster
+    volumeHandle: {{ .Values.audiobookshelf.podcasts.share }}##
+    volumeAttributes:
+      source: //{{ .Values.audiobookshelf.podcasts.share }}
+    nodeStageSecretRef:
+      name: {{ .Values.audiobookshelf.podcasts.secret }}
+      namespace: {{ .Values.audiobookshelf.podcasts.secretNamespace }}
+---
+### Claim for podcasts share
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ .Values.audiobookshelf.namespace }}
+  name: audiobookshelf-podcasts-claim
+spec:
+  storageClassName: manual
+  volumeName: audiobookshelf-podcasts-share
   accessModes:
     - ReadWriteMany
   resources:
@@ -323,11 +373,16 @@ spec:
             existingClaim: {{ .Values.audiobookshelf.metadataPVC }}
             globalMounts:
               - path: /metadata
-          data:
+          books:
             enabled: true
-            existingClaim: audiobookshelf-media-claim
+            existingClaim: audiobookshelf-books-claim
             globalMounts:
               - path: /audiobooks
+          podcasts:
+            enabled: true
+            existingClaim: audiobookshelf-podcasts-claim
+            globalMounts:
+              - path: /podcasts
         autoscaling:
           enabled: false
           minReplicas: 1
