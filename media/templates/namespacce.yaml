@@ -1,0 +1,8 @@
+---
+# namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.whisparr.namespace }}
+  annotations:
+    volsync.backube/privileged-movers: "true"

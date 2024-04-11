@@ -1,13 +1,5 @@
 {{ if .Values.posterr.enabled }}
 ---
-# namespace
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ .Values.posterr.namespace }}
-  annotations:
-    volsync.backube/privileged-movers: "true"
----
 # config Replication Bucket
 {{ if .Values.replication.enabled }}
 apiVersion: minio.crossplane.io/v1

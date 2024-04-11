@@ -1,13 +1,5 @@
 {{ if .Values.audiobookshelf.enabled }}
 ---
-# namespace
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ .Values.audiobookshelf.namespace }}
-  annotations:
-    volsync.backube/privileged-movers: "true"
----
 # config Replication Bucket
 {{ if .Values.replication.enabled }}
 apiVersion: minio.crossplane.io/v1
@@ -157,7 +149,7 @@ spec:
   sourcePVC: {{ .Values.audiobookshelf.metadataPVC }}
   trigger:
     # Take a backup per cron schedule
-    schedule: {{ .Values.audiobookshelf.schedule }}
+    schedule: {{ .Values.audiobookshelf.replicationSchedulechedule }}
   restic:
     # Prune the repository (repack to free space) every 2 weeks
     pruneIntervalDays: 14
