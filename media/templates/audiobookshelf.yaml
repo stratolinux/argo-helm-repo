@@ -342,7 +342,7 @@ spec:
               app:
                 image:
                   repository: ghcr.io/advplyr/audiobookshelf
-                  tag: latest
+                  tag: "v2.8.1"
         service:
           app:
             controller: audiobookshelf
