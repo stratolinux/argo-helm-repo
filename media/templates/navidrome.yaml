@@ -169,6 +169,8 @@ kind: Application
 metadata:
   name: navidrome
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     name: in-cluster

@@ -325,6 +325,8 @@ kind: Application
 metadata:
   name: audiobookshelf
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     name: in-cluster
