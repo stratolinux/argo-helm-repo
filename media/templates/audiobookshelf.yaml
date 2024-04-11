@@ -149,7 +149,7 @@ spec:
   sourcePVC: {{ .Values.audiobookshelf.metadataPVC }}
   trigger:
     # Take a backup per cron schedule
-    schedule: {{ .Values.audiobookshelf.replicationSchedulechedule }}
+    schedule: {{ .Values.audiobookshelf.replicationSchedule }}
   restic:
     # Prune the repository (repack to free space) every 2 weeks
     pruneIntervalDays: 14
