@@ -12,6 +12,18 @@ replication:
   aws_access_key_id: "aws_access_key_id"
   aws_secret_access_key: "aws_secret_access_key"
 
+# homepage
+homepage:
+  enabled: true
+  image: "ghcr.io/gethomepage/homepage:latest"
+  version: "v0.8.11"
+  replicationSchedule: "0 * * * *"
+  ingress:
+    enabled: true
+    host: "homepage.local"
+  namespace: media
+  configPVC: "config-pvc-will-create-if-needed"
+
 # navidrome 
 navidrome:
   enabled: true
