@@ -15,7 +15,7 @@ replication:
 # homepage
 homepage:
   enabled: true
-  image: "ghcr.io/gethomepage/homepage:latest"
+  image: "ghcr.io/gethomepage/homepage"
   version: "v0.8.11"
   replicationSchedule: "0 * * * *"
   ingress:
