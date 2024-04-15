@@ -9,7 +9,7 @@ metadata:
   name: audiobookshelf-bucket-config
   namespace: {{ .Values.audiobookshelf.namespace }}
 stringData:
-  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.environment }}-{{ .Values.audiobookshelf.namespace }}-audiobookshelf-config
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.audiobookshelf.namespace }}-audiobookshelf-config
   RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
   AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
   AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
@@ -24,7 +24,7 @@ metadata:
   name: audiobookshelf-bucket-metadata
   namespace: {{ .Values.audiobookshelf.namespace }}
 stringData:
-  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.environment }}-{{ .Values.audiobookshelf.namespace }}-audiobookshelf-metadata
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.audiobookshelf.namespace }}-audiobookshelf-metadata
   RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
   AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
   AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}

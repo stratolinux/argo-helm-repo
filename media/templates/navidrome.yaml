@@ -9,7 +9,7 @@ metadata:
   name: navidrome-bucket-config
   namespace: {{ .Values.navidrome.namespace }}
 stringData:
-  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.environment }}-{{ .Values.navidrome.namespace }}-navidrome-config
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.navidrome.namespace }}-navidrome-config
   RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
   AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
   AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}

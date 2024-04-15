@@ -9,7 +9,7 @@ metadata:
   name: posterr-bucket-config
   namespace: {{ .Values.posterr.namespace }}
 stringData:
-  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.environment }}-{{ .Values.posterr.namespace }}-posterr-config
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.posterr.namespace }}-posterr-config
   RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
   AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
   AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
