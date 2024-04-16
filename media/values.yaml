@@ -20,7 +20,7 @@ homepage:
     enabled: true
     host: "homepage.local"
   namespace: media
-  configPVC: "config-pvc-will-create-if-needed"
+  configPVC: "homepage-config"
 
 # navidrome 
 navidrome:
@@ -36,7 +36,7 @@ navidrome:
     share: "//smb.server.name/share"
     secret: "name-of-secret-with-creds"
     secretNamespace: "namespace-holding-secret"
-  configPVC: "config-pvc-will-create-if-needed"
+  configPVC: "navidrome-config"
 
 # posterr
 posterr:
@@ -48,7 +48,7 @@ posterr:
     enabled: true
     host: "posterr.local"
   namespace: media
-  configPVC: "config-pvc-will-create-if-needed"
+  configPVC: "posterr-config"
 
 # maintainerr
 maintainerr:
@@ -60,7 +60,7 @@ maintainerr:
     enabled: true
     host: "maintainerr.local"
   namespace: media
-  configPVC: "config-pvc-will-create-if-needed"
+  configPVC: "maintainerr-config"
 
 # whisparr
 whisparr:
@@ -80,7 +80,7 @@ whisparr:
     share: "//smb.server.name/share2"
     secret: "name-of-secret-with-creds2"
     secretNamespace: "namespace-holding-secret2"
-  configPVC: "config-pvc-will-create-if-needed"
+  configPVC: "whisparr-config"
 
 # audiobookshelf
 audiobookshelf:
@@ -100,5 +100,5 @@ audiobookshelf:
     share: "//smb.server.name/share2"
     secret: "name-of-secret-with-creds2"
     secretNamespace: "namespace-holding-secret2"
-  configPVC: "config-pvc-will-create-if-needed"
-  metadataPVC: "config-pvc-will-create-if-needed"
+  configPVC: "audiobookshelf-config"
+  metadataPVC: "audiobookshelf-metadata"
