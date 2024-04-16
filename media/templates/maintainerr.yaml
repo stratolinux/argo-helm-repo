@@ -1,4 +1,4 @@
-{{ if .Values.homepage.enabled }}
+{{ if .Values.maintainerr.enabled }}
 ---
 # config Replication Secret
 {{ if .Values.replication.enabled }}
@@ -6,10 +6,10 @@ apiVersion: v1
 kind: Secret
 type: Opaque             
 metadata:
-  name: homepage-bucket-config
-  namespace: {{ .Values.homepage.namespace }}
+  name: maintainerr-bucket-config
+  namespace: {{ .Values.maintainerr.namespace }}
 stringData:
-  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.homepage.namespace }}-homepage-config
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.maintainerr.namespace }}-maintainerr-config
   RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
   AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
   AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
@@ -20,15 +20,15 @@ stringData:
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  name: homepage-config-replication-destination
-  namespace: {{ .Values.homepage.namespace }}
+  name: maintainerr-config-replication-destination
+  namespace: {{ .Values.maintainerr.namespace }}
 spec:
   trigger:
     # manual restore
     manual: "seed-volume-from-backup"
   restic:
     # Name of the Secret with the connection information
-    repository: homepage-bucket-config
+    repository: maintainerr-bucket-config
     capacity: 5Gi
     copyMethod: Snapshot
     storageClassName: ceph-block
@@ -42,19 +42,19 @@ spec:
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  name: homepage-config-replication-source
-  namespace: {{ .Values.homepage.namespace }}
+  name: maintainerr-config-replication-source
+  namespace: {{ .Values.maintainerr.namespace }}
 spec:
   # The PVC to be backed up
-  sourcePVC: {{ .Values.homepage.configPVC }}
+  sourcePVC: {{ .Values.maintainerr.configPVC }}
   trigger:
     # Take a backup per cron schedule
-    schedule: {{ .Values.homepage.replicationSchedule }}
+    schedule: {{ .Values.maintainerr.replicationSchedule }}
   restic:
     # Prune the repository (repack to free space) every 2 weeks
     pruneIntervalDays: 14
     # Name of the Secret with the connection information
-    repository: homepage-bucket-config
+    repository: maintainerr-bucket-config
     # Retention policy for backups
     retain:
       hourly: 2
@@ -75,8 +75,8 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.homepage.configPVC }}
-  namespace: {{ .Values.homepage.namespace }}
+  name: {{ .Values.maintainerr.configPVC }}
+  namespace: {{ .Values.maintainerr.namespace }}
 spec:
   storageClassName: ceph-block
   accessModes:
@@ -85,24 +85,24 @@ spec:
   dataSourceRef:
     kind: ReplicationDestination
     apiGroup: volsync.backube
-    name: homepage-config-replication-destination
+    name: maintainerr-config-replication-destination
 {{ end }}
   resources:
     requests:
       storage: 5Gi
 ---
-# homepage helm chart application
+# maintainerr helm chart application
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: homepage
+  name: maintainerr
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     name: in-cluster
-    namespace: {{ .Values.homepage.namespace }}
+    namespace: {{ .Values.maintainerr.namespace }}
   project: default
   source:
     repoURL: https://bjw-s.github.io/helm-charts
@@ -111,35 +111,35 @@ spec:
     helm:
       valuesObject:
         controllers:
-          homepage:
+          maintainerr:
             containers:
               app:
                 image:
-                  repository: {{ .Values.homepage.image }}
-                  tag: {{ .Values.homepage.version }}
+                  repository: {{ .Values.maintainerr.image }}
+                  tag: {{ .Values.maintainerr.version }}
         service:
           app:
-            controller: homepage
+            controller: maintainerr
             ports:
               http:
-                port: 3000
+                port: 6246
         ingress:
           app:
-            enabled: {{ .Values.homepage.ingress.enabled }}
+            enabled: {{ .Values.maintainerr.ingress.enabled }}
             hosts:
-              - host: {{ .Values.homepage.ingress.host }}
+              - host: {{ .Values.maintainerr.ingress.host }}
                 paths:
                   - path: /
                     pathType: Prefix
                     service: 
-                      name: homepage
-                      port: 3000
+                      name: maintainerr
+                      port: 6246
         persistence:
           config:
             enabled: true
-            existingClaim: {{ .Values.homepage.configPVC }}
+            existingClaim: {{ .Values.maintainerr.configPVC }}
             globalMounts:
-              - path: /app/config
+              - path: /opt/data
         autoscaling:
           enabled: false
           minReplicas: 1

@@ -50,6 +50,18 @@ posterr:
   namespace: media
   configPVC: "config-pvc-will-create-if-needed"
 
+# maintainerr
+maintainerr:
+  enabled: true
+  image: "ghcr.io/jorenn92/maintainerr"
+  version: "latest"
+  replicationSchedule: "0 * * * *"
+  ingress:
+    enabled: true
+    host: "maintainerr.local"
+  namespace: media
+  configPVC: "config-pvc-will-create-if-needed"
+
 # whisparr
 whisparr:
   enabled: true
