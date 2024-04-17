@@ -12,7 +12,7 @@ replication:
 
 # homepage
 homepage:
-  enabled: true
+  enabled: false
   image: "ghcr.io/gethomepage/homepage"
   version: "v0.8.11"
   replicationSchedule: "0 * * * *"
@@ -24,7 +24,7 @@ homepage:
 
 # navidrome 
 navidrome:
-  enabled: true
+  enabled: false
   image: "deluan/navidrome"
   version: "0.51.1"
   replicationSchedule: "0 * * * *"
@@ -40,7 +40,7 @@ navidrome:
 
 # posterr
 posterr:
-  enabled: true
+  enabled: false
   image: "petersem/posterr"
   version: "latest"
   replicationSchedule: "0 * * * *"
@@ -52,7 +52,7 @@ posterr:
 
 # maintainerr
 maintainerr:
-  enabled: true
+  enabled: false
   image: "ghcr.io/jorenn92/maintainerr"
   version: "latest"
   replicationSchedule: "0 * * * *"
@@ -64,7 +64,7 @@ maintainerr:
 
 # whisparr
 whisparr:
-  enabled: true
+  enabled: false
   image: "ghcr.io/hotio/whisparr"
   version: "latest"
   replicationSchedule: "0 * * * *"
@@ -84,7 +84,7 @@ whisparr:
 
 # audiobookshelf
 audiobookshelf:
-  enabled: true
+  enabled: false
   image: "ghcr.io/advplyr/audiobookshelf"
   version: "2.8.1"
   replicationSchedule: "0 * * * *"
