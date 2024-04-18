@@ -407,7 +407,7 @@ spec:
           cache:
             enabled: true
             existingClaim: {{ .Values.tubearchivist.cachePVC }}
-            advanceMounts:
+            advancedMounts:
               tubearchivist:
                 app:
                   - path: /cache
@@ -415,7 +415,7 @@ spec:
           redis:
             enabled: true
             existingClaim: {{ .Values.tubearchivist.redisPVC }}
-            advanceMounts:
+            advancedMounts:
               tubearchivist:
                 redis:
                   - path: /data
@@ -423,7 +423,7 @@ spec:
           es:
             enabled: true
             existingClaim: {{ .Values.tubearchivist.esPVC }}
-            advanceMounts:
+            advancedMounts:
               tubearchivist:
                 es:
                   - path: /usr/share/elasticsearch/data
