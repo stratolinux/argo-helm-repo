@@ -383,7 +383,7 @@ spec:
                   - name: discovery.type
                     value: single-node
                   - name: path.repo
-                    value: /es-data/snapshot
+                    value: /es-data
                   - name: ELASTIC_PASSWORD
                     value: dangerous
         service:
