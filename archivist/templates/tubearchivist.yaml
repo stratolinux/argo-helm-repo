@@ -407,18 +407,26 @@ spec:
           cache:
             enabled: true
             existingClaim: {{ .Values.tubearchivist.cachePVC }}
-            globalMounts:
-              - path: /cache
+              tubearchivist:
+                app:
+                  - path: /cache
+                    readOnly: false
           redis:
             enabled: true
             existingClaim: {{ .Values.tubearchivist.redisPVC }}
-            globalMounts:
-              - path: /data
+            advanceMounts:
+              tubearchivist:
+                redis:
+                  - path: /data
+                    readOnly: false
           es:
             enabled: true
             existingClaim: {{ .Values.tubearchivist.esPVC }}
-            globalMounts:
-              - path: /usr/share/elasticsearch/data
+             advanceMounts:
+              tubearchivist:
+                es:
+                  - path: /usr/share/elasticsearch/data
+                    readonly: false
           videos:
             enabled: true
             existingClaim: tubearchivist-videos-claim
