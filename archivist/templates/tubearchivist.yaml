@@ -352,8 +352,6 @@ spec:
                 image:
                   repository: {{ .Values.tubearchivist.mainImage }}
                   tag: {{ .Values.tubearchivist.version }}
-                securityContext:
-                  runAsUser: 0
                 env:
                   - name: ES_URL
                     value: http://localhost:9200
@@ -373,14 +371,10 @@ spec:
                 image:
                   repository: {{ .Values.tubearchivist.redisImage }}
                   tag: {{ .Values.tubearchivist.version }}
-                securityContext:
-                  runAsUser: 0
               es:
                 image:
                   repository: {{ .Values.tubearchivist.esImage }}
                   tag: {{ .Values.tubearchivist.version }}
-                securityContext:
-                  runAsUser: 0
                 env:
                   - name: ES_JAVA_OPTS
                     value: "-Xms512m -Xmx512m"
