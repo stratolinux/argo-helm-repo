@@ -383,7 +383,7 @@ spec:
                   - name: discovery.type
                     value: single-node
                   - name: path.repo
-                    value: /es-data
+                    value: /usr/share/elasticsearch/data
                   - name: ELASTIC_PASSWORD
                     value: dangerous
         service:
@@ -426,7 +426,7 @@ spec:
             advancedMounts:
               tubearchivist:
                 es:
-                  - path: /es-data
+                  - path: /usr/share/elasticsearch/data
                     readOnly: false
           videos:
             enabled: true
