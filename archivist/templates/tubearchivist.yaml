@@ -407,6 +407,7 @@ spec:
           cache:
             enabled: true
             existingClaim: {{ .Values.tubearchivist.cachePVC }}
+            advanceMounts:
               tubearchivist:
                 app:
                   - path: /cache
@@ -422,7 +423,7 @@ spec:
           es:
             enabled: true
             existingClaim: {{ .Values.tubearchivist.esPVC }}
-             advanceMounts:
+            advanceMounts:
               tubearchivist:
                 es:
                   - path: /usr/share/elasticsearch/data
