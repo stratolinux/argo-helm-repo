@@ -13,7 +13,7 @@ replication:
 # tubearchivist
 tubearchivist:
   enabled: false
-  mainImage: "bbilly1/tubearchivist/tubearchivist"
+  mainImage: "bbilly1/tubearchivist"
   redisImage: "redis/redis-stack-server"
   esImage: "bbilly1/tubearchivist-es"
   version: "latest"
