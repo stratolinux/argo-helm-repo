@@ -352,6 +352,8 @@ spec:
                 image:
                   repository: {{ .Values.tubearchivist.mainImage }}
                   tag: {{ .Values.tubearchivist.version }}
+                securityContext:
+                  runAsUser: 0
                 env:
                   - name: ES_URL
                     value: http://localhost:9200
@@ -371,10 +373,14 @@ spec:
                 image:
                   repository: {{ .Values.tubearchivist.redisImage }}
                   tag: {{ .Values.tubearchivist.version }}
+                securityContext:
+                  runAsUser: 0
               es:
                 image:
                   repository: {{ .Values.tubearchivist.esImage }}
                   tag: {{ .Values.tubearchivist.version }}
+                securityContext:
+                  runAsUser: 0
                 env:
                   - name: ES_JAVA_OPTS
                     value: "-Xms512m -Xmx512m"
@@ -383,7 +389,7 @@ spec:
                   - name: discovery.type
                     value: single-node
                   - name: path.repo
-                    value: /usr/share/elasticsearch/data
+                    value: /usr/share/elasticsearch/data/snapshot
                   - name: ELASTIC_PASSWORD
                     value: dangerous
         service:
