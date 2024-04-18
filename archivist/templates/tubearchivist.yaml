@@ -16,7 +16,7 @@ stringData:
   AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
 {{ end }}
 ---
-# config ReplicationDestination
+# cache ReplicationDestination
 {{ if .Values.replication.enabled }}
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
@@ -38,7 +38,7 @@ spec:
       - ReadWriteOnce
 {{ end }}
 ---
-# config ReplicationSource
+# cache ReplicationSource
 {{ if .Values.replication.enabled }}
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
@@ -47,7 +47,7 @@ metadata:
   namespace: {{ .Values.tubearchivist.namespace }}
 spec:
   # The PVC to be backed up
-  sourcePVC: {{ .Values.tubearchivist.configPVC }}
+  sourcePVC: {{ .Values.tubearchivist.cachePVC }}
   trigger:
     # Take a backup per cron schedule
     schedule: {{ .Values.tubearchivist.replicationSchedule }}
@@ -108,7 +108,7 @@ stringData:
   AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
 {{ end }}
 ---
-# config ReplicationDestination
+# redis ReplicationDestination
 {{ if .Values.replication.enabled }}
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
@@ -130,7 +130,7 @@ spec:
       - ReadWriteOnce
 {{ end }}
 ---
-# config ReplicationSource
+# redis ReplicationSource
 {{ if .Values.replication.enabled }}
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
@@ -139,7 +139,7 @@ metadata:
   namespace: {{ .Values.tubearchivist.namespace }}
 spec:
   # The PVC to be backed up
-  sourcePVC: {{ .Values.tubearchivist.configPVC }}
+  sourcePVC: {{ .Values.tubearchivist.redisPVC }}
   trigger:
     # Take a backup per cron schedule
     schedule: {{ .Values.tubearchivist.replicationSchedule }}
@@ -200,7 +200,7 @@ stringData:
   AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
 {{ end }}
 ---
-# config ReplicationDestination
+# es ReplicationDestination
 {{ if .Values.replication.enabled }}
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
@@ -222,7 +222,7 @@ spec:
       - ReadWriteOnce
 {{ end }}
 ---
-# config ReplicationSource
+# es ReplicationSource
 {{ if .Values.replication.enabled }}
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
@@ -231,7 +231,7 @@ metadata:
   namespace: {{ .Values.tubearchivist.namespace }}
 spec:
   # The PVC to be backed up
-  sourcePVC: {{ .Values.tubearchivist.configPVC }}
+  sourcePVC: {{ .Values.tubearchivist.esPVC }}
   trigger:
     # Take a backup per cron schedule
     schedule: {{ .Values.tubearchivist.replicationSchedule }}
