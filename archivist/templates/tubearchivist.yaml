@@ -383,7 +383,7 @@ spec:
                   - name: discovery.type
                     value: single-node
                   - name: path.repo
-                    value: /usr/share/elasticsearch/data/snapshot
+                    value: /es-data/snapshot
                   - name: ELASTIC_PASSWORD
                     value: dangerous
         service:
@@ -426,13 +426,16 @@ spec:
             advancedMounts:
               tubearchivist:
                 es:
-                  - path: /usr/share/elasticsearch/data
+                  - path: /es-data
                     readOnly: false
           videos:
             enabled: true
             existingClaim: tubearchivist-videos-claim
-            globalMounts:
-              - path: /youtube
+            advancedMounts:
+              tubearchivist:
+                app:
+                  - path: /youtube
+                    readOnly: false
         autoscaling:
           enabled: false
           minReplicas: 1
