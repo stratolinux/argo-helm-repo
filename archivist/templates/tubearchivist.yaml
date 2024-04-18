@@ -1,0 +1,438 @@
+{{ if .Values.tubearchivist.enabled }}
+---
+### CACHE VOLUME
+# cache Replication Secret
+{{ if .Values.replication.enabled }}
+apiVersion: v1
+kind: Secret
+type: Opaque             
+metadata:
+  name: tubearchivist-bucket-cache
+  namespace: {{ .Values.tubearchivist.namespace }}
+stringData:
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.tubearchivist.namespace }}-tubearchivist-cache
+  RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
+  AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
+{{ end }}
+---
+# config ReplicationDestination
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: tubearchivist-cache-replication-destination
+  namespace: {{ .Values.tubearchivist.namespace }}
+spec:
+  trigger:
+    # manual restore
+    manual: "seed-volume-from-backup"
+  restic:
+    # Name of the Secret with the connection information
+    repository: tubearchivist-bucket-cache
+    capacity: 5Gi
+    copyMethod: Snapshot
+    storageClassName: ceph-block
+    volumeSnapshotClassName: ceph-block
+    accessModes:
+      - ReadWriteOnce
+{{ end }}
+---
+# config ReplicationSource
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: tubearchivist-cache-replication-source
+  namespace: {{ .Values.tubearchivist.namespace }}
+spec:
+  # The PVC to be backed up
+  sourcePVC: {{ .Values.tubearchivist.configPVC }}
+  trigger:
+    # Take a backup per cron schedule
+    schedule: {{ .Values.tubearchivist.replicationSchedule }}
+  restic:
+    # Prune the repository (repack to free space) every 2 weeks
+    pruneIntervalDays: 14
+    # Name of the Secret with the connection information
+    repository: tubearchivist-bucket-cache
+    # Retention policy for backups
+    retain:
+      hourly: 2
+      daily: 2
+      weekly: 2
+      monthly: 1
+      yearly: 0
+    # just in case it was locked
+    unlock: unlock-me
+    # Snap the source volume prior to taking a backup to ensure a
+    # point-in-time image.
+    copyMethod: Snapshot
+    # The VSC to use if the copy method is Snapshot (default if omitted)
+    volumeSnapshotClassName: ceph-block
+{{ end }}
+---
+# cache PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.tubearchivist.cachePVC }}
+  namespace: {{ .Values.tubearchivist.namespace }}
+spec:
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce
+{{ if .Values.replication.enabled }}
+  dataSourceRef:
+    kind: ReplicationDestination
+    apiGroup: volsync.backube
+    name: tubearchivist-cache-replication-destination
+{{ end }}
+  resources:
+    requests:
+      storage: 5Gi
+---
+### REDIS VOLUME
+# redis Replication Secret
+{{ if .Values.replication.enabled }}
+apiVersion: v1
+kind: Secret
+type: Opaque             
+metadata:
+  name: tubearchivist-bucket-redis
+  namespace: {{ .Values.tubearchivist.namespace }}
+stringData:
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.tubearchivist.namespace }}-tubearchivist-redis
+  RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
+  AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
+{{ end }}
+---
+# config ReplicationDestination
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: tubearchivist-redis-replication-destination
+  namespace: {{ .Values.tubearchivist.namespace }}
+spec:
+  trigger:
+    # manual restore
+    manual: "seed-volume-from-backup"
+  restic:
+    # Name of the Secret with the connection information
+    repository: tubearchivist-bucket-redis
+    capacity: 5Gi
+    copyMethod: Snapshot
+    storageClassName: ceph-block
+    volumeSnapshotClassName: ceph-block
+    accessModes:
+      - ReadWriteOnce
+{{ end }}
+---
+# config ReplicationSource
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: tubearchivist-redis-replication-source
+  namespace: {{ .Values.tubearchivist.namespace }}
+spec:
+  # The PVC to be backed up
+  sourcePVC: {{ .Values.tubearchivist.configPVC }}
+  trigger:
+    # Take a backup per cron schedule
+    schedule: {{ .Values.tubearchivist.replicationSchedule }}
+  restic:
+    # Prune the repository (repack to free space) every 2 weeks
+    pruneIntervalDays: 14
+    # Name of the Secret with the connection information
+    repository: tubearchivist-bucket-redis
+    # Retention policy for backups
+    retain:
+      hourly: 2
+      daily: 2
+      weekly: 2
+      monthly: 1
+      yearly: 0
+    # just in case it was locked
+    unlock: unlock-me
+    # Snap the source volume prior to taking a backup to ensure a
+    # point-in-time image.
+    copyMethod: Snapshot
+    # The VSC to use if the copy method is Snapshot (default if omitted)
+    volumeSnapshotClassName: ceph-block
+{{ end }}
+---
+# redis PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.tubearchivist.redisPVC }}
+  namespace: {{ .Values.tubearchivist.namespace }}
+spec:
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce
+{{ if .Values.replication.enabled }}
+  dataSourceRef:
+    kind: ReplicationDestination
+    apiGroup: volsync.backube
+    name: tubearchivist-redis-replication-destination
+{{ end }}
+  resources:
+    requests:
+      storage: 5Gi
+---
+### ELASTIC SEARCH VOLUME
+# es Replication Secret
+{{ if .Values.replication.enabled }}
+apiVersion: v1
+kind: Secret
+type: Opaque             
+metadata:
+  name: tubearchivist-bucket-es
+  namespace: {{ .Values.tubearchivist.namespace }}
+stringData:
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.tubearchivist.namespace }}-tubearchivist-es
+  RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
+  AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
+{{ end }}
+---
+# config ReplicationDestination
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: tubearchivist-es-replication-destination
+  namespace: {{ .Values.tubearchivist.namespace }}
+spec:
+  trigger:
+    # manual restore
+    manual: "seed-volume-from-backup"
+  restic:
+    # Name of the Secret with the connection information
+    repository: tubearchivist-bucket-es
+    capacity: 5Gi
+    copyMethod: Snapshot
+    storageClassName: ceph-block
+    volumeSnapshotClassName: ceph-block
+    accessModes:
+      - ReadWriteOnce
+{{ end }}
+---
+# config ReplicationSource
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: tubearchivist-es-replication-source
+  namespace: {{ .Values.tubearchivist.namespace }}
+spec:
+  # The PVC to be backed up
+  sourcePVC: {{ .Values.tubearchivist.configPVC }}
+  trigger:
+    # Take a backup per cron schedule
+    schedule: {{ .Values.tubearchivist.replicationSchedule }}
+  restic:
+    # Prune the repository (repack to free space) every 2 weeks
+    pruneIntervalDays: 14
+    # Name of the Secret with the connection information
+    repository: tubearchivist-bucket-es
+    # Retention policy for backups
+    retain:
+      hourly: 2
+      daily: 2
+      weekly: 2
+      monthly: 1
+      yearly: 0
+    # just in case it was locked
+    unlock: unlock-me
+    # Snap the source volume prior to taking a backup to ensure a
+    # point-in-time image.
+    copyMethod: Snapshot
+    # The VSC to use if the copy method is Snapshot (default if omitted)
+    volumeSnapshotClassName: ceph-block
+{{ end }}
+---
+# es PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.tubearchivist.esPVC }}
+  namespace: {{ .Values.tubearchivist.namespace }}
+spec:
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce
+{{ if .Values.replication.enabled }}
+  dataSourceRef:
+    kind: ReplicationDestination
+    apiGroup: volsync.backube
+    name: tubearchivist-es-replication-destination
+{{ end }}
+  resources:
+    requests:
+      storage: 5Gi
+---
+# PV for videos share
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
+  name: tubearchivist-videos-share
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=1000
+    - gid=1000
+    - noperm
+    - mfsymlinks
+    - cache=strict
+    - noserverino  # required to prevent data corruption
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
+    # make sure this value is unique for every share in the cluster
+    volumeHandle: {{ .Values.tubearchivist.videos.share }}##
+    volumeAttributes:
+      source: //{{ .Values.tubearchivist.videos.share }}
+    nodeStageSecretRef:
+      name: {{ .Values.tubearchivist.videos.secret }}
+      namespace: {{ .Values.tubearchivist.videos.secretNamespace }}
+---
+### Claim for books share
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ .Values.tubearchivist.namespace }}
+  name: tubearchivist-videos-claim
+spec:
+  storageClassName: manual
+  volumeName: tubearchivist-videos-share
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+---
+# tubearchivist helm chart application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tubearchivist
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.tubearchivist.namespace }}
+  project: default
+  source:
+    repoURL: https://bjw-s.github.io/helm-charts
+    targetRevision: "3.1.0"
+    chart: app-template
+    helm:
+      valuesObject:
+        controllers:
+          tubearchivist:
+            containers:
+              app:
+                image:
+                  repository: {{ .Values.tubearchivist.mainImage }}
+                  tag: {{ .Values.tubearchivist.version }}
+                env:
+                  - name: ES_URL
+                    value: http://localhost:9200
+                  - name: REDIS_HOST
+                    value: localhost
+                  - name: TA_HOST
+                    value: {{ .Values.tubearchivist.ingress.host }}
+                  - name: TA_USERNAME
+                    value: admin
+                  - name: TA_PASSWORD
+                    value: dangerous
+                  - name: ELASTIC_PASSWORD
+                    value: dangerous
+                  - name: TZ
+                    value: America/New_York
+              redis:
+                image:
+                  repository: {{ .Values.tubearchivist.redisImage }}
+                  tag: {{ .Values.tubearchivist.version }}
+              es:
+                image:
+                  repository: {{ .Values.tubearchivist.esImage }}
+                  tag: {{ .Values.tubearchivist.version }}
+                env:
+                  - name: ES_JAVA_OPTS
+                    value: ""-Xms512m -Xmx512m"
+                  - name: xpack.security.enabled
+                    value: true
+                  - name: discovery.type
+                    value: single-node
+                  - name: path.repo
+                    value: /usr/share/elasticsearch/data/snapshot:q
+                  - name: ELASTIC_PASSWORD
+                    value: dangerous
+        service:
+          app:
+            controller: tubearchivist
+            ports:
+              http:
+                port: 8000
+        ingress:
+          app:
+            enabled: {{ .Values.tubearchivist.ingress.enabled }}
+            hosts:
+              - host: {{ .Values.tubearchivist.ingress.host }}
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    service: 
+                      name: tubearchivist
+                      port: 8000
+        persistence:
+          cache:
+            enabled: true
+            existingClaim: {{ .Values.tubearchivist.cachePVC }}
+            globalMounts:
+              - path: /cache
+          redis:
+            enabled: true
+            existingClaim: {{ .Values.tubearchivist.redisPVC }}
+            globalMounts:
+              - path: /data
+          es:
+            enabled: true
+            existingClaim: {{ .Values.tubearchivist.esPVC }}
+            globalMounts:
+              - path: /usr/share/elasticsearch/data
+          videos:
+            enabled: true
+            existingClaim: tubearchivist-videos-claim
+            globalMounts:
+              - path: /youtube
+        autoscaling:
+          enabled: false
+          minReplicas: 1
+          maxReplicas: 1
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+{{ end }}
