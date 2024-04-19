@@ -113,7 +113,7 @@ spec:
     - gid=1000
     - noperm
     - mfsymlinks
-    - config=strict
+    - cache=strict
     - noserverino  # required to prevent data corruption
   csi:
     driver: smb.csi.k8s.io

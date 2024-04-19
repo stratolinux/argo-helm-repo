@@ -126,7 +126,7 @@ spec:
       name: {{ .Values.whisparr.media.secret }}
       namespace: {{ .Values.whisparr.media.secretNamespace }}
 ---
-# PV for servies share
+# PV for services share
 apiVersion: v1
 kind: PersistentVolume
 metadata:
