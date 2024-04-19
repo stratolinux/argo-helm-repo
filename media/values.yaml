@@ -102,3 +102,19 @@ audiobookshelf:
     secretNamespace: "namespace-holding-secret2"
   configPVC: "audiobookshelf-config"
   metadataPVC: "audiobookshelf-metadata"
+
+# tubesync
+tubesync:
+  enabled: false
+  image: "ghcr.io/meeb/tubesync"
+  version: "latest"
+  replicationSchedule: "30 * * * *"
+  ingress:
+    enabled: true
+    host: "tubesync.local"
+  namespace: media
+  videos:
+    share: "//smb.server.name/share"
+    secret: "name-of-secret-with-creds"
+    secretNamespace: "namespace-holding-secret"
+  configPVC: "tubesync-config"
