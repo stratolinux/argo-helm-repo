@@ -10,22 +10,19 @@ replication:
   aws_access_key_id: "aws_access_key_id"
   aws_secret_access_key: "aws_secret_access_key"
 
-# tubearchivist
-tubearchivist:
+# tubesync
+tubesync:
   enabled: false
-  mainImage: "bbilly1/tubearchivist"
-  redisImage: "redis/redis-stack-server"
-  esImage: "bbilly1/tubearchivist-es"
+  image: "ghcr.io/meeb/tubesync"
   version: "latest"
   replicationSchedule: "30 * * * *"
   ingress:
     enabled: true
-    host: "tubearchivist.local"
+    host: "tubesync.local"
   namespace: media
   videos:
     share: "//smb.server.name/share"
     secret: "name-of-secret-with-creds"
     secretNamespace: "namespace-holding-secret"
-  cachePVC: "tubearchivist-cache"
-  redisPVC: "tubearchivist-redis"
-  esPVC: "tubearchivist-es"
+  configPVC: "tubesync-config"
+
