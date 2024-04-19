@@ -140,11 +140,6 @@ spec:
             existingClaim: {{ .Values.posterr.configPVC }}
             globalMounts:
               - path: /usr/src/app/config
-        env:
-          ND_SCANSCHEDULE: 1h
-          ND_LOGLEVEL: info
-          ND_SESSIONTIMEOUT: 24h
-          ND_BASEURL: ""
         autoscaling:
           enabled: false
           minReplicas: 1

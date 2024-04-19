@@ -170,13 +170,6 @@ spec:
                   tag: {{ .Values.tubesync.version }}
                 securityContext:
                   runAsUser: 0
-              env:
-                - name: TZ
-                  value: Americas/New_York
-                - name: PUID
-                  value: 1000
-                - name: GUID
-                  value: 1000
         service:
           app:
             controller: tubesync
@@ -209,6 +202,10 @@ spec:
           enabled: false
           minReplicas: 1
           maxReplicas: 1
+        env:
+          TZ: Americas/New_York
+          PUID: 1000
+          GUID: 1000
   syncPolicy:
     automated:
       prune: true
