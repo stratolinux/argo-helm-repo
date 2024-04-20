@@ -90,7 +90,7 @@ spec:
 {{ end }}
   resources:
     requests:
-      storage: 5Gi
+      storage: 20Gi
 ---
 # PV for videos share
 apiVersion: v1
