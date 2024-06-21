@@ -1,0 +1,11 @@
+# Default values
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+coder:
+  enabled: true
+  ingress:
+    enabled: true
+    hosts: ["your.host.name"]
+  namespace: "coder"
+
