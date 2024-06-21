@@ -13,7 +13,7 @@ spec:
   project: default
   source:
     repoURL: https://charts.bitnami.com/bitnami
-    chart: bitname/postgresql
+    chart: bitnami/postgresql
     targetRevision: 15.5.9
     helm:
       valuesObject:
