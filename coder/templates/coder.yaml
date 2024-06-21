@@ -47,10 +47,10 @@ spec:
             # (Optional) For production deployments the access URL should be set.
             # If you're just trying Coder, access the dashboard via the service IP.
             - name: CODER_ACCESS_URL
-              value: "https://coder.k8s.stratolinux.io"
+              value: "https://{{ .Values.coder.ingress.host }}"
           ingress:
-            enable: true
-            host: "coder.k8s.stratolinux.io"
+            enable: {{ .Values.coder.ingress.enabled }}
+            host: {{ .Values.coder.ingress.host }}
 
   syncPolicy:
     automated:

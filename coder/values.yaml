@@ -6,6 +6,6 @@ coder:
   enabled: true
   ingress:
     enabled: true
-    hosts: ["your.host.name"]
+    host: "your.host.name"
   namespace: "coder"
 
