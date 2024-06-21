@@ -38,6 +38,6 @@ metadata:
   name: coder-db-url
   namespace: {{ .Values.coder.namespace }}
 stringData:
-  url: postgres://coder:coder@coder-db-postgresql.coder.svc.cluster.local:5432/coder?sslmode=disable
+  url: postgres://coder:coder@coder-postgres-postgresql.coder.svc.cluster.local:5432/coder?sslmode=disable
 {{ end }}
 ---
