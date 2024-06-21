@@ -14,6 +14,7 @@ spec:
   source:
     repoURL: https://helm.coder.com/v2
     chart: coder-v2/coder
+    targetRevision: 2.12.1
     helm:
       valuesObject:
         coder:
