@@ -85,7 +85,7 @@ spec:
   dataSourceRef:
     kind: ReplicationDestination
     apiGroup: volsync.backube
-    name: traefik-config-replication-destination
+    name: traefik-replication-destination
 {{ end }}
   resources:
     requests:
