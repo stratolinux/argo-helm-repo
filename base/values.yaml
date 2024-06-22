@@ -1,0 +1,18 @@
+# Default values
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# replication settings, identical for all services
+replication:
+  enabled: true
+  restic_repository: "s3:http://minio.local:9000"
+  restic_password: "restic_password"
+  aws_access_key_id: "aws_access_key_id"
+  aws_secret_access_key: "aws_secret_access_key"
+
+# traefik
+traefik:
+  replicationSchedule: "0 * * * *"
+  namespace: traefik
+  configPVC: "traefik"
+

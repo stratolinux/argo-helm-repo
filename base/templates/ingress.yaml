@@ -1,0 +1,189 @@
+{{ if .Values.traefik.enabled }}
+---
+# config Replication Secret
+{{ if .Values.replication.enabled }}
+apiVersion: v1
+kind: Secret
+type: Opaque             
+metadata:
+  name: traefik-bucket-config
+  namespace: {{ .Values.traefik.namespace }}
+stringData:
+  RESTIC_REPOSITORY: {{ .Values.replication.restic_repository }}/{{ .Values.traefik.namespace }}-traefik-config
+  RESTIC_PASSWORD: {{ .Values.replication.restic_password }}
+  AWS_ACCESS_KEY_ID: {{ .Values.replication.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: {{ .Values.replication.aws_secret_access_key }}
+{{ end }}
+---
+# config ReplicationDestination
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: traefik-replication-destination
+  namespace: {{ .Values.traefik.namespace }}
+spec:
+  trigger:
+    # manual restore
+    manual: "seed-volume-from-backup"
+  restic:
+    # Name of the Secret with the connection information
+    repository: traefik-bucket-config
+    capacity: 1Gi
+    copyMethod: Snapshot
+    storageClassName: ceph-block
+    volumeSnapshotClassName: ceph-block
+    accessModes:
+      - ReadWriteOnce
+{{ end }}
+---
+# config ReplicationSource
+{{ if .Values.replication.enabled }}
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: traefik-replication-source
+  namespace: {{ .Values.traefik.namespace }}
+spec:
+  # The PVC to be backed up
+  sourcePVC: {{ .Values.traefik.configPVC }}
+  trigger:
+    # Take a backup per cron schedule
+    schedule: {{ .Values.traefik.replicationSchedule }}
+  restic:
+    # Prune the repository (repack to free space) every 2 weeks
+    pruneIntervalDays: 14
+    # Name of the Secret with the connection information
+    repository: traefik-bucket-config
+    # Retention policy for backups
+    retain:
+      hourly: 2
+      daily: 2
+      weekly: 2
+      monthly: 1
+      yearly: 0
+    # just in case it was locked
+    unlock: unlock-me
+    # Snap the source volume prior to taking a backup to ensure a
+    # point-in-time image.
+    copyMethod: Snapshot
+    # The VSC to use if the copy method is Snapshot (default if omitted)
+    volumeSnapshotClassName: ceph-block
+{{ end }}
+---
+# config PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.traefik.configPVC }}
+  namespace: {{ .Values.traefik.namespace }}
+spec:
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce
+{{ if .Values.replication.enabled }}
+  dataSourceRef:
+    kind: ReplicationDestination
+    apiGroup: volsync.backube
+    name: traefik-config-replication-destination
+{{ end }}
+  resources:
+    requests:
+      storage: 5Gi
+---
+# traefik helm chart application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.traefik.namespace }}
+  project: default
+  source:
+    repoURL: https://traefik.github.io/charts
+    targetRevision: "v27.0.0"
+    chart: traefik
+    helm:
+      valuesObject:
+        logs:
+          general:
+            level: DEBUG
+        ports:
+          web:
+            redirectTo:
+              port: websecure
+          websecure:
+            tls:
+              enabled: true
+              certResolver: cloudflare
+        server:
+          service:
+            type: "LoadBalancer"
+        ingressRoute:
+          dashboard:
+            enabled: false
+        persistence:
+          enabled: true
+          existingClaim: traefik
+          name: data
+          path: /data
+          size: 1Gi
+        ingressClass:
+          enabled: true
+          isDefaultClass: true
+        deployment:
+          initContainers:
+            - name: volume-permissions
+              image: traefik:v2.10.4
+              command:
+                [
+                  "sh",
+                  "-c",
+                  "touch /data/acme.json; chown 65532 /data/acme.json; chmod -v 600 /data/acme.json",
+                ]
+              securityContext:
+                runAsNonRoot: false
+                runAsGroup: 0
+                runAsUser: 0
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+        additionalArguments:
+          - "--certificatesresolvers.cloudflare.acme.dnsChallenge=true"
+          - "--certificatesResolvers.cloudflare.acme.dnsChallenge.provider=cloudflare"
+          - "--certificatesResolvers.cloudflare.acme.email=eric@aceshome.com"
+          - "--certificatesResolvers.cloudflare.acme.dnsChallenge.resolvers=1.1.1.1"
+          - "--certificatesResolvers.cloudflare.acme.storage=/data/acme.json"
+          - "--serversTransport.insecureSkipVerify=true"
+          - "--entryPoints.web.proxyProtocol.insecure"
+          - "--entryPoints.web.forwardedHeaders.insecure"
+          - "--entryPoints.websecure.proxyProtocol.insecure"
+          - "--entryPoints.websecure.forwardedHeaders.insecure"
+          - "--entrypoints.websecure.transport.respondingtimeouts.idletimeout=60"
+          #- "--entrypoints.websecure.transport.respondingtimeouts.readtimeout=60"
+          #- "--entrypoints.websecure.transport.respondingtimeouts.writetimeout=60"
+          - "--providers.kubernetesingress.ingressendpoint.publishedservice={{ .Values.traefik.namespace }}/traefik"
+        env:
+          - name: CF_API_EMAIL
+            valueFrom:
+              secretKeyRef:
+                key: CF_API_EMAIL
+                name:  cloudflare-credentials
+          - name: CF_DNS_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: CF_DNS_API_TOKEN
+                name:  cloudflare-credentials
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+{{ end }}
