@@ -1,0 +1,92 @@
+---
+# rook dashboard secret
+apiVersion: v1
+kind: Secret
+type: Opaque             
+metadata:
+  name: rook-ceph-dashboard-password
+  namespace: {{ .Values.ceph.namespace }}
+stringData:
+  password: {{ .Values.ceph.dashPassword }}
+---
+# ceph release
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ceph-operator
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.ceph.namespace }}
+  project: default
+  source:
+    repoURL: https://charts.rook.io/release
+    targetRevision: "v1.14.7"
+    chart: rook-ceph
+    helm:
+      valuesObject:
+        enableDiscoveryDaemon: true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+---
+# ceph release
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ceph-release
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.ceph.namespace }}
+  project: default
+  source:
+    repoURL: https://charts.rook.io/release
+    targetRevision: "v1.14.7"
+    chart: rook-ceph-cluster
+    helm:
+      valuesObject:
+        operatorNamespace: {{ .Values.ceph.namespace }}
+        toolbox:
+          enabled: false
+        cephFileSystems: []
+        cephObjectStores: []
+        cephBlockPoolsVolumeSnapshotClass:
+          enabled: true
+          deletionPolicy: 
+        cephClusterSpec:
+          dashboard:
+            enabled: true
+            port: 80
+            ssl: false
+          mgr:
+            modules:
+              - name: pg_autoscaler # This is already enabled by default, but needs to be here so that we don't override the default behavior.
+                enabled: true
+              - name: rook # This enables the rook module.
+                enabled: true
+          resources: {}
+          storage:
+            osdsPerDevice: "1"
+        ingress:
+          dashboard:
+            host:
+              name: {{ .Values.ceph.ingress.host }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+

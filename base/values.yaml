@@ -17,6 +17,11 @@ traefik:
   configPVC: "traefik"
   cf_api_email: "myemailaddress"
   cf_api_dns_token: "apitoken"
+ceph:
+  namespace: rook-ceph
+  dashPassword: myPassword
+  ingress:
+    host: myhostname.mydomain
 
 
 
