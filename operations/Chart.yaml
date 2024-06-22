@@ -1,6 +1,7 @@
 apiVersion: v2
 name: operations-helm
 description: A Helm chart for Kubernetes Operational Management tools
+icon: https://avatars.githubusercontent.com/u/25410597?s=96&v=4
 
 # A chart can be either an 'application' or a 'library' chart.
 #

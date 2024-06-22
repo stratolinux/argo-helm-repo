@@ -1,6 +1,7 @@
 apiVersion: v2
 name: base-app-of-apps
 description: A Helm chart basic K8s services
+icon: https://avatars.githubusercontent.com/u/25410597?s=96&v=4
 
 # A chart can be either an 'application' or a 'library' chart.
 #
