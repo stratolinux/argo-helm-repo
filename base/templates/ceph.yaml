@@ -77,7 +77,8 @@ spec:
                 enabled: true
           resources: {}
           storage:
-            osdsPerDevice: "1"
+            config:
+              osdsPerDevice: "1"
         ingress:
           dashboard:
             host:
