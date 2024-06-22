@@ -76,9 +76,6 @@ spec:
               - name: rook # This enables the rook module.
                 enabled: true
           resources: {}
-          storage:
-            config:
-              osdsPerDevice: "1"
         ingress:
           dashboard:
             host:
