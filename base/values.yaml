@@ -15,4 +15,6 @@ traefik:
   replicationSchedule: "0 * * * *"
   namespace: traefik
   configPVC: "traefik"
+  cf_api_email: "myemailaddress"
+  cf_api_dns_token: "apitoken"
 
