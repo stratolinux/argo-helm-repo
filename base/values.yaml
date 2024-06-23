@@ -22,6 +22,12 @@ ceph:
   dashPassword: myPassword
   ingress:
     host: myhostname.mydomain
-
+metallb:
+  namespace: metallb-system
+  addresses:
+    - 10.10.90.100-10.10.90.110
+volsync:
+  namespace: volsync-system
+  endpoint: http://my.s3.provider:port/bucket
 
 
