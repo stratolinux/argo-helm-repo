@@ -27,6 +27,7 @@ spec:
       selfHeal: true
     syncOptions:
       - ServerSideApply=true
+      - Validate=false
 ---
 apiVersion: v1
 kind: Secret
