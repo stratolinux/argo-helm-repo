@@ -4,31 +4,6 @@ kind: Namespace
 metadata:
   name: {{ .Values.volsync.namespace }}
 ---
-# volsync helm chart application
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: volsync
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  destination:
-    name: in-cluster
-    namespace: {{ .Values.volsync.namespace }}
-  project: default
-  source:
-    repoURL: https://backube.github.io/helm-charts
-    targetRevision: "0.9.1"
-    chart: volsync
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - ServerSideApply=true
-      - Validate=false
----
 apiVersion: v1
 kind: Secret
 type: Opaque     
