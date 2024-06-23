@@ -8,31 +8,6 @@ metadata:
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
 ---
-# metallb helm chart application
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: metallb
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  destination:
-    name: in-cluster
-    namespace: {{ .Values.metallb.namespace }}
-  project: default
-  source:
-    repoURL: https://metallb.github.io/metallb
-    targetRevision: "v0.14.5"
-    chart: metallb
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - ServerSideApply=true
-      - Validate=false
----
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
