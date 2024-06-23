@@ -28,3 +28,6 @@ dependencies:
 - name: metallb
   version: "v0.14.5"
   repository: https://metallb.github.io/metallb
+- name: volsync
+  version: "0.9.1"
+  repository: https://backube.github.io/helm-charts
