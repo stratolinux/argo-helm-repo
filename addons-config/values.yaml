@@ -1,0 +1,14 @@
+# Default values
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metallb:
+  namespace: metallb-system
+  addresses:
+    - 10.10.90.100-10.10.90.110
+volsync:
+  namespace: volsync-system
+  endpoint: http://my.s3.provider:port/bucket
+  aws_access_key_id: "aws_access_key_id"
+  aws_secret_access_key: "aws_secret_access_key"
+

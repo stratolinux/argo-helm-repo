@@ -1,0 +1,25 @@
+---
+# metallb helm chart application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.metallb.namespace }}
+  project: default
+  source:
+    repoURL: https://metallb.github.io/metallb
+    targetRevision: {{ .Values.metallb.version }}
+    chart: metallb
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true

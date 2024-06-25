@@ -21,5 +21,5 @@ stringData:
     env_auth = false
     endpoint = {{ .Values.volsync.endpoint }}
     acl = bucket-owner-full-control
-    access_key_id = {{ .Values.replication.aws_access_key_id }}
-    secret_access_key = {{ .Values.replication.aws_secrey_access_key }}
+    access_key_id = {{ .Values.volsync.aws_access_key_id }}
+    secret_access_key = {{ .Values.volsync.aws_secrey_access_key }}

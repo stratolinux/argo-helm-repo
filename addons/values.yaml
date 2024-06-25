@@ -1,0 +1,12 @@
+# Default values
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metallb:
+  namespace: metallb-system
+  version: "v0.14.5"
+
+volsync:
+  namespace: volsync-system
+  version: "0.9.1"
+
