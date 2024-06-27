@@ -17,7 +17,7 @@ traefik:
   configPVC: "traefik"
   cf_api_email: "myemailaddress"
   cf_api_dns_token: "apitoken"
-csi-smb:
+csismb:
   username: user
   password: password
   share: smb.server.name/share
