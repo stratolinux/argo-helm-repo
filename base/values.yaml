@@ -22,6 +22,7 @@ csi-smb:
   password: password
   share: smb.server.name/share
 ceph:
+  enabled: false
   namespace: rook-ceph
   dashPassword: myPassword
   ingress:

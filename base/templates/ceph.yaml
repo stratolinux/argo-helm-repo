@@ -1,4 +1,5 @@
----
+
+{{ if .Values.ceph.enabled }}---
 # rook dashboard secret
 apiVersion: v1
 kind: Secret
@@ -87,4 +88,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-
+{{ end }}
