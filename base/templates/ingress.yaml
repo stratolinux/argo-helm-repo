@@ -78,7 +78,7 @@ spec:
                 [
                   "sh",
                   "-c",
-                  "touch /data/acme.json; chown -R 65532 /data; chmod -v 600 /data/acme.json",
+                  "touch /data/acme.json; chown -R 65532:65532 /data; chmod -v 600 /data/acme.json",
                 ]
               securityContext:
                 runAsNonRoot: false
