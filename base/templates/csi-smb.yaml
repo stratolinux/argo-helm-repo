@@ -1,3 +1,4 @@
+{{ if .Values.csismb.enabled }}---
 ---
 # traefik helm chart application
 apiVersion: argoproj.io/v1alpha1
@@ -45,8 +46,6 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: smbclass
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "true"
 provisioner: smb.csi.k8s.io
 parameters:
   source: {{ .Values.csismb.share }}
@@ -64,3 +63,5 @@ mountOptions:
   - file_mode=0777
   - uid=1001
   - gid=1001
+  
+  {{ end }}

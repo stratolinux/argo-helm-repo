@@ -18,10 +18,12 @@ traefik:
   cf_api_email: "myemailaddress"
   cf_api_dns_token: "apitoken"
 csismb:
+  enabled: true
   username: user
   password: password
   share: smb.server.name/share
 csinfs:
+  enabled: true
   host: nfs.server.name
   share: /share
 ceph:
@@ -30,12 +32,6 @@ ceph:
   dashPassword: myPassword
   ingress:
     host: myhostname.mydomain
-metallb:
-  namespace: metallb-system
-  addresses:
-    - 10.10.90.100-10.10.90.110
-volsync:
-  namespace: volsync-system
-  endpoint: http://my.s3.provider:port/bucket
+
 
 
