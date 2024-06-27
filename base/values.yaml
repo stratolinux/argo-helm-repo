@@ -21,6 +21,9 @@ csismb:
   username: user
   password: password
   share: smb.server.name/share
+csinfs:
+  host: nfs.server.name
+  share: /share
 ceph:
   enabled: false
   namespace: rook-ceph

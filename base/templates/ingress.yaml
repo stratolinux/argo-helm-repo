@@ -18,7 +18,7 @@ metadata:
   name: {{ .Values.traefik.configPVC }}
   namespace: {{ .Values.traefik.namespace }}
 spec:
-  storageClassName: smbclass
+  storageClassName: nfsclass
   accessModes:
     - ReadWriteOnce
   resources:
