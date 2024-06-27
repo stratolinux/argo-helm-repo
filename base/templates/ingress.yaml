@@ -89,7 +89,7 @@ metadata:
   name: {{ .Values.traefik.configPVC }}
   namespace: {{ .Values.traefik.namespace }}
 spec:
-  storageClassName: ceph-block
+  storageClassName: smbclass
   accessModes:
     - ReadWriteOnce
 {{ if .Values.replication.enabled }}
