@@ -42,3 +42,5 @@ parameters:
   subDir: ${pvc.metadata.name}
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
+mountOptions:
+  - nolock
