@@ -30,4 +30,35 @@ spec:
       kind: CSIDriver
       jqPathExpressions:
         - .spec.seLinuxMount
-
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smbcreds
+  namespace: kube-system
+type: Opaque
+stringData:
+  username: {{ .Values.csi-smb.username }}
+  password: {{ .Values.csi-smb.password }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: smbclass
+provisioner: smb.csi.k8s.io
+parameters:
+  source: {{ .Values.csi-smb.share }}
+  subDir: ${pvc.metadata.name}
+  # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
+  # with PV name under source
+  csi.storage.k8s.io/provisioner-secret-name: smbcreds
+  csi.storage.k8s.io/provisioner-secret-namespace: kube-system
+  csi.storage.k8s.io/node-stage-secret-name: smbcreds
+  csi.storage.k8s.io/node-stage-secret-namespace: kube-system
+reclaimPolicy: Retain  # available values: Delete, Retain
+volumeBindingMode: Immediate
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+  - uid=1001
+  - gid=1001
