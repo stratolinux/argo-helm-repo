@@ -22,4 +22,4 @@ stringData:
     endpoint = {{ .Values.volsync.endpoint }}
     acl = bucket-owner-full-control
     access_key_id = {{ .Values.volsync.aws_access_key_id }}
-    secret_access_key = {{ .Values.volsync.aws_secrey_access_key }}
+    secret_access_key = {{ .Values.volsync.aws_secret_access_key }}
