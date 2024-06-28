@@ -9,5 +9,5 @@ spec:
   defaultGeneratedCert:
     resolver: cloudflare
     domain:
-      main: {{ .Values.traefik.default_cert.main }}
+      main: \'{{ .Values.traefik.default_cert.main }}\'
 {{ end }}
