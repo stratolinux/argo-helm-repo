@@ -11,6 +11,22 @@ stringData:
   CF_API_EMAIL: {{ .Values.traefik.cf_api_email }}
   CF_DNS_API_TOKEN: {{ .Values.traefik.cf_dns_api_token }}
 ---
+# statically provisioned config PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.traefik.configPVC }}
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfsclass
+  nfs:
+    path: {{ .Values.csinfs.share }}/{{ .Values.traefik.configPVC }}
+    server: {{ .Values.csinfs.host }}
+---
 # config PVC
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -24,6 +40,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  volumeName: {{ .Values.traefik.configPVC }}
 ---
 # traefik helm chart application
 apiVersion: argoproj.io/v1alpha1
