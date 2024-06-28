@@ -1,5 +1,6 @@
 {{ if .Values.traefik.enabled }}
 ---
+{{ if false }}
 # statically provisioned config PV
 apiVersion: v1
 kind: PersistentVolume
@@ -17,6 +18,7 @@ spec:
     path: "{{ .Values.csinfs.share }}/{{ .Values.traefik.configPVC }}"
     server: {{ .Values.csinfs.host }}
 ---
+{{ end }}
 # cloudflare secret, used to generate certs
 apiVersion: v1
 kind: Secret
@@ -41,7 +43,9 @@ spec:
   resources:
     requests:
       storage: 1Gi
+{{ if false }}
   volumeName: {{ .Values.traefik.configPVC }}
+{{ end }}
 ---
 # traefik helm chart application
 apiVersion: argoproj.io/v1alpha1
