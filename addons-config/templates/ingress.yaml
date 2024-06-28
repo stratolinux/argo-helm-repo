@@ -1,5 +1,4 @@
 {{ if .Values.traefik.enabled }}
-{{ if .Values.traefik.default_cert.main }}
 ---
 apiVersion: traefik.io/v1alpha1
 kind: TLSStore
@@ -11,5 +10,4 @@ spec:
     resolver: cloudflare
     domain:
       main: "{{ .Values.traefik.default_cert.main }}"
-{{ end }}
 {{ end }}
