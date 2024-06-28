@@ -14,7 +14,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfsclass
   nfs:
-    path: {{ .Values.csinfs.share }}
+    path: "{{ .Values.csinfs.share }}/{{ .Values.traefik.configPVC }}"
     server: {{ .Values.csinfs.host }}
 ---
 # cloudflare secret, used to generate certs
@@ -149,5 +149,4 @@ spec:
     resolver: cloudflare
     domain:
       main: {{ .Values.traefik.defaultcert.main }}
-      sans: {{ .Values.traefik.defaultcert.sans }}
 {{ end }}
