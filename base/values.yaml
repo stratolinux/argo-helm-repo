@@ -17,6 +17,10 @@ traefik:
   configPVC: "traefik"
   cf_api_email: "myemailaddress"
   cf_api_dns_token: "apitoken"
+  defaultcert:
+    main: main.host.name
+    sans:
+      - '*.main.host.name'
 csismb:
   enabled: true
   username: user

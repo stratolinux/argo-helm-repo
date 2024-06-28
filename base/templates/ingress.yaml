@@ -120,4 +120,16 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSStore
+metadata:
+  name: default
+  namespace: {{ .Values.traefik.namespace }}
+spec:
+  defaultGeneratedCert:
+    resolver: cloudflare
+    domain:
+      main: {{ .Values.traefik.defaultcert.main }}
+      sans: {{ .Values.traefik.defaultcert.sans }}
 {{ end }}
