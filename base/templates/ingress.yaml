@@ -1,16 +1,5 @@
 {{ if .Values.traefik.enabled }}
 ---
-# cloudflare secret, used to generate certs
-apiVersion: v1
-kind: Secret
-type: Opaque             
-metadata:
-  name: cloudflare-credentials
-  namespace: {{ .Values.traefik.namespace }}
-stringData:
-  CF_API_EMAIL: {{ .Values.traefik.cf_api_email }}
-  CF_DNS_API_TOKEN: {{ .Values.traefik.cf_dns_api_token }}
----
 # statically provisioned config PV
 apiVersion: v1
 kind: PersistentVolume
@@ -27,6 +16,17 @@ spec:
   nfs:
     path: {{ .Values.csinfs.share }}
     server: {{ .Values.csinfs.host }}
+---
+# cloudflare secret, used to generate certs
+apiVersion: v1
+kind: Secret
+type: Opaque             
+metadata:
+  name: cloudflare-credentials
+  namespace: {{ .Values.traefik.namespace }}
+stringData:
+  CF_API_EMAIL: {{ .Values.traefik.cf_api_email }}
+  CF_DNS_API_TOKEN: {{ .Values.traefik.cf_dns_api_token }}
 ---
 # config PVC
 apiVersion: v1
