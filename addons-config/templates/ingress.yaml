@@ -10,6 +10,6 @@ spec:
   defaultGeneratedCert:
     resolver: cloudflare
     domain:
-      main: '*.k8s.stratoloniux.io'
+      main: "{{ .Values.traefik.default_cert.main }}"
 {{ end }}
 {{ end }}
