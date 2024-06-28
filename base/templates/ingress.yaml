@@ -1,6 +1,6 @@
 {{ if .Values.traefik.enabled }}
 ---
-# cloudflare secret
+# cloudflare secret, used to generate certs
 apiVersion: v1
 kind: Secret
 type: Opaque             
@@ -25,7 +25,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfsclass
   nfs:
-    path: "{{ .Values.csinfs.share }}/{{ .Values.traefik.configPVC }}"
+    path: {{ .Values.csinfs.share }}
     server: {{ .Values.csinfs.host }}
 ---
 # config PVC
