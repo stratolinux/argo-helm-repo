@@ -11,8 +11,5 @@ spec:
     resolver: cloudflare
     domain:
       main: {{ .Values.traefik.default_cert.main }}
-{{ if .Values.traefik.default_cert.sans }}
-      sans: {{ .Values.traefik.default_cert.sans }}
-{{ end }}
 {{ end }}
 {{ end }}
