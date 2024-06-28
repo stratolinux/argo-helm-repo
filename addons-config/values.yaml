@@ -24,7 +24,7 @@ traefik:
   configPVC: traefik
   cf_api_email: "myemailaddress"
   cf_api_dns_token: "apitoken"
-#  default_cert:
-#    main: main.host.name
+  default_cert:
+    main: main.host.name
 #    sans:
 #      - '*.main.host.name'
