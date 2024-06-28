@@ -1,4 +1,5 @@
-
+{{ if .Values.metallb.enabled }}
+---
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -13,3 +14,4 @@ metadata:
   name: default-advertisement
   namespace: {{ .Values.metallb.namespace }}
 
+{{ end }}

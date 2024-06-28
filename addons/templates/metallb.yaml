@@ -1,3 +1,4 @@
+{{ if .Values.metallb.enabled }}
 ---
 # metallb helm chart application
 apiVersion: argoproj.io/v1alpha1
@@ -23,3 +24,5 @@ spec:
     syncOptions:
       - ServerSideApply=true
       - CreateNamespace=true
+
+{{ end }}

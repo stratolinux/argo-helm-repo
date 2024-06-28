@@ -3,10 +3,40 @@
 # Declare variables to be passed into your templates.
 
 metallb:
+  enabled: true
   namespace: metallb-system
   version: "v0.14.5"
+  addresses:
+    - 10.10.90.100-10.10.90.110
 
 volsync:
+  enabled: true
   namespace: volsync-system
   version: "0.9.1"
+  endpoint: http://my.s3.provider:port/bucket
+  aws_access_key_id: "aws_access_key_id"
+  aws_secret_access_key: "aws_secret_access_key"
+
+csismb:
+  enabled: true
+  version: "v1.14.0"
+  username: user
+  password: password
+  share: smb.server.name/share
+
+csinfs:
+  enabled: true
+  version: "v4.7.0"
+  host: nfs.server.name
+  share: /share
+
+traefik:
+  enabled: true
+  version: "v27.0.0"
+  namespace: traefik
+  configPVC: traefik
+  cf_api_email: "myemailaddress"
+  cf_api_dns_token: "apitoken"
+  default_cert:
+    main: main.host.name
 

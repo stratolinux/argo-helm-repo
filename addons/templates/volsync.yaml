@@ -1,3 +1,5 @@
+{{ if .Values.volsync.enabled }}
+---
 # volsync helm chart application
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -22,3 +24,5 @@ spec:
     syncOptions:
       - ServerSideApply=true
       - CreateNamespace=true
+
+{{ end }}

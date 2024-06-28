@@ -1,0 +1,13 @@
+{{ if .Values.traefik.enabled }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSStore
+metadata:
+  name: default
+  namespace: {{ .Values.traefik.namespace }}
+spec:
+  defaultGeneratedCert:
+    resolver: cloudflare
+    domain:
+      main: {{ .Values.traefik.default_cert.main }}
+{{ end }}

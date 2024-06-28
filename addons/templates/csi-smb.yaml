@@ -1,0 +1,67 @@
+{{ if .Values.csismb.enabled }}
+---
+# traefik helm chart application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: csi-smb
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: kube-system
+  project: default
+  source:
+    repoURL: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
+    targetRevision: {{ .Values.csismb.version }}
+    chart: csi-driver-smb
+    helm:
+      valuesObject:
+        controller.runOnControlPlane: true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+  ignoreDifferences:
+    - group: storage.k8s.io
+      kind: CSIDriver
+      jqPathExpressions:
+        - .spec.seLinuxMount
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smbcreds
+  namespace: kube-system
+type: Opaque
+stringData:
+  username: {{ .Values.csismb.username }}
+  password: {{ .Values.csismb.password }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: smbclass
+provisioner: smb.csi.k8s.io
+parameters:
+  source: {{ .Values.csismb.share }}
+  subDir: ${pvc.metadata.name}
+  # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
+  # with PV name under source
+  csi.storage.k8s.io/provisioner-secret-name: smbcreds
+  csi.storage.k8s.io/provisioner-secret-namespace: kube-system
+  csi.storage.k8s.io/node-stage-secret-name: smbcreds
+  csi.storage.k8s.io/node-stage-secret-namespace: kube-system
+reclaimPolicy: Retain  # available values: Delete, Retain
+volumeBindingMode: Immediate
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+  - uid=1001
+  - gid=1001
+  
+  {{ end }}

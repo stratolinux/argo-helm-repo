@@ -1,3 +1,4 @@
+{{ if .Values.volsync.enabled }}
 ---
 apiVersion: v1
 kind: Namespace
@@ -23,3 +24,5 @@ stringData:
     acl = bucket-owner-full-control
     access_key_id = {{ .Values.volsync.aws_access_key_id }}
     secret_access_key = {{ .Values.volsync.aws_secret_access_key }}
+
+{{ end }}
