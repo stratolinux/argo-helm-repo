@@ -40,3 +40,10 @@ traefik:
 #  default_cert:
 #    main: main.host.name
 
+ceph:
+  enabled: false
+  namespace: rook-ceph
+  dashPassword: myPassword
+  ingress:
+    host: myhostname.mydomain
+
