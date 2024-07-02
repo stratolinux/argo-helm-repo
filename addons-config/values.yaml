@@ -28,3 +28,4 @@ traefik:
     main: main.host.name
 #    sans:
 #      - '*.main.host.name'
+#      - "*.another.host.name"

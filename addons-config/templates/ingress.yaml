@@ -11,5 +11,8 @@ spec:
     resolver: cloudflare
     domain:
       main: {{ .Values.traefik.default_cert.main | quote }}
+{{- if .Values.traefik.default_cert.sans }}
+      sans: [ "{{ join "\",\"" .Values.traefik.default_cert.sans }}" ]
+{{ end }}
 {{ end }}
 {{ end }}
