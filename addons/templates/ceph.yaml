@@ -37,6 +37,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - Validate=false
 ---
 # ceph release
 apiVersion: argoproj.io/v1alpha1
@@ -88,4 +89,5 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - Validate=false
 {{ end }}
