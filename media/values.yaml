@@ -62,26 +62,6 @@ maintainerr:
   namespace: media
   configPVC: "maintainerr-config"
 
-# whisparr
-whisparr:
-  enabled: false
-  image: "ghcr.io/hotio/whisparr"
-  version: "latest"
-  replicationSchedule: "0 * * * *"
-  ingress:
-    enabled: true
-    host: "whisparr.local"
-  namespace: media
-  media:
-    share: "//smb.server.name/share"
-    secret: "name-of-secret-with-creds"
-    secretNamespace: "namespace-holding-secret"
-  services:
-    share: "//smb.server.name/share2"
-    secret: "name-of-secret-with-creds2"
-    secretNamespace: "namespace-holding-secret2"
-  configPVC: "whisparr-config"
-
 # audiobookshelf
 audiobookshelf:
   enabled: false
