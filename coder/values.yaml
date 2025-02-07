@@ -9,3 +9,10 @@ coder:
     host: "your.host.name"
   namespace: "coder"
 
+temporal:
+  ingress:
+    enabled: true
+    web: web.mydomain.com
+    frontend: frontend.mydomain.com
+  namespace: temporal
+
