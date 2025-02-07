@@ -47,3 +47,7 @@ ceph:
   ingress:
     host: myhostname.mydomain
 
+temporal:
+  ingress:
+    enabled: true
+  namespace: temporal
