@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: temporal
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.temporal.namespace }}
+  project: default
+  source:
+    repoURL: https://go.temporal.io/helm-charts
+    targetRevision: "0.54.0"
+    chart: temporal
+    helm:
+      valuesObject:
+        server:
+          replicaCount: 1
+          config:
+            namespaces:
+              create: true
+              namespace:
+                - name: default
+                  retention: 7d
+          frontend:
+            ingress:
+              enabled: true
+              hosts:
+                - temporal-frontent.k8s.stratolinux.io
+        web:
+          ingress:
+            enabled: true
+            hosts:
+              - temporal-web.k8s.stratolinux.io
+        cassandra:
+          config:
+            cluster_size: 1
+        elasticsearch:
+          replicas: 1
+        prometheus:
+          enabled: false
+        grafana:
+          enabled: false
+

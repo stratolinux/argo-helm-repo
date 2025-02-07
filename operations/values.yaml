@@ -9,3 +9,8 @@ prometheus:
   namespace: kube-prometheus-stack
   adminPassword: "adminpassword"
 
+temporal:
+  ingress:
+    enabled: true
+  namespace: temporal
+
