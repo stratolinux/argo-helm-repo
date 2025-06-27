@@ -1,3 +1,4 @@
+{{ if .Values.temporal.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -50,4 +51,4 @@ spec:
           enabled: false
         grafana:
           enabled: false
-
+{{ end }}
