@@ -41,5 +41,9 @@ spec:
      kind: CustomResourceDefinition
      jsonPointers:
        - /spec/preserveUnknownFields
-
+   - group: apiextensions.k8s.io
+     name: engines.longhorn.io
+     kind: CustomResourceDefinition
+     jsonPointers:
+       - /spec/preserveUnknownFields
 {{ end }}
