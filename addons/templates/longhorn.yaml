@@ -35,5 +35,11 @@ spec:
     syncOptions:
       # Create the namespace if it does not exist.
       - CreateNamespace=true
+  ignoreDifferences:
+   - group: apiextensions.k8s.io
+     name: engineimages.longhorn.io
+     kind: CustomResourceDefinition
+     jsonPointers:
+       - /spec/preserveUnknownFields
 
 {{ end }}
