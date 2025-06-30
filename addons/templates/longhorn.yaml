@@ -1,0 +1,37 @@
+{{ if .Values.coder.enabled }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argocd
+  # Add a finalizer to ensure that the application is deleted cleanly.
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://charts.longhorn.io
+    chart: longhorn
+    targetRevision: {{ .Values.longhorn.version }} # It is recommended to pin to a specific chart version.
+    helm:
+      # Release name override
+      releaseName: longhorn
+      valuesObject:
+        ingress:
+          enabled: true
+          host: {{ .Values.longhorn.ingress.host }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.longhorn.namespace }}
+  syncPolicy:
+    automated:
+      # Prune resources that are no longer in the git repository.
+      prune: true
+      # Allow Argo CD to delete resources that it did not create.
+      selfHeal: true
+    syncOptions:
+      # Create the namespace if it does not exist.
+      - CreateNamespace=true
+
+{{ end }}

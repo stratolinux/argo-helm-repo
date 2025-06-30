@@ -47,3 +47,9 @@ ceph:
   ingress:
     host: myhostname.mydomain
 
+longhorn:
+  enabled: false
+  version: "1.9.0"
+  namespace: longhorn-system
+  ingress:
+    host: myhostname.mydomain
