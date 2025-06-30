@@ -46,4 +46,30 @@ spec:
      kind: CustomResourceDefinition
      jsonPointers:
        - /spec/preserveUnknownFields
+   - group: apiextensions.k8s.io
+     name: instancemanagers.longhorn.io
+     kind: CustomResourceDefinition
+     jsonPointers:
+       - /spec/preserveUnknownFields
+   - group: apiextensions.k8s.io
+     name: nodes.longhorn.io
+     kind: CustomResourceDefinition
+     jsonPointers:
+       - /spec/preserveUnknownFields
+   - group: apiextensions.k8s.io
+     name: replicas.longhorn.io
+     kind: CustomResourceDefinition
+     jsonPointers:
+       - /spec/preserveUnknownFields
+   - group: apiextensions.k8s.io
+     name: settings.longhorn.io
+     kind: CustomResourceDefinition
+     jsonPointers:
+       - /spec/preserveUnknownFields
+   - group: apiextensions.k8s.io
+     name: volumes.longhorn.io
+     kind: CustomResourceDefinition
+     jsonPointers:
+       - /spec/preserveUnknownFields
+
 {{ end }}
