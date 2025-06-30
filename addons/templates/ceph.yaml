@@ -1,5 +1,6 @@
 
-{{ if .Values.ceph.enabled }}---
+{{ if .Values.ceph.enabled }}
+---
 # rook dashboard secret
 apiVersion: v1
 kind: Secret
