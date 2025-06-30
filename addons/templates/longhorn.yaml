@@ -18,6 +18,8 @@ spec:
       # Release name override
       releaseName: longhorn
       valuesObject:
+        preUpgradeChecker:
+          jobEnabled: false
         ingress:
           enabled: true
           host: {{ .Values.longhorn.ingress.host }}
