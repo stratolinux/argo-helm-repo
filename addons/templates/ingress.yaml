@@ -68,6 +68,9 @@ spec:
     chart: traefik
     helm:
       valuesObject:
+        service:
+          annotations:
+            metallb.io/loadBalancerIPs: 10.10.4.230
         logs:
           general:
             level: DEBUG
