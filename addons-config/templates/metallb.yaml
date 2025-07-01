@@ -7,7 +7,7 @@ metadata:
   namespace: {{ .Values.metallb.namespace }}
 spec:
   autoAssign: true
-  addresses: {{ .Values.metallb.default-addresses }}
+  addresses: {{ .Values.metallb.default_addresses }}
 ---
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
@@ -16,7 +16,7 @@ metadata:
   namespace: {{ .Values.metallb.namespace }}
 spec:
   autoAssign: false
-  addresses: {{ .Values.metallb.reserved-addresses }}
+  addresses: {{ .Values.metallb.reserved_addresses }}
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
