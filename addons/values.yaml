@@ -37,6 +37,7 @@ traefik:
   configPVC: traefik
   cf_api_email: "myemailaddress"
   cf_api_dns_token: "apitoken"
+  loadBalancerIP: "0.0.0.0"
 #  default_cert:
 #    main: main.host.name
 
