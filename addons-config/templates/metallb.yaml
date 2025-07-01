@@ -6,7 +6,17 @@ metadata:
   name: default-pool
   namespace: {{ .Values.metallb.namespace }}
 spec:
-  addresses: {{ .Values.metallb.addresses }}
+  autoAssign: true
+  addresses: {{ .Values.metallb.default-addresses }}
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: reserved-pool
+  namespace: {{ .Values.metallb.namespace }}
+spec:
+  autoAssign: false
+  addresses: {{ .Values.metallb.reserved-addresses }}
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement

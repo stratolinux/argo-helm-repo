@@ -6,8 +6,12 @@ metallb:
   enabled: true
   namespace: metallb-system
   version: "v0.14.5"
-  addresses:
+  # default-addresses can be auto assigned
+  default_addresses:
     - 10.10.90.100-10.10.90.110
+  # reserved address must be explicity requested in the service definition
+  reserved_addresses:
+    - 10.10.90.120/30
 
 volsync:
   enabled: true
