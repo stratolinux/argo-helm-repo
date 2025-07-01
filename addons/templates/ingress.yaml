@@ -83,7 +83,7 @@ spec:
           service:
             type: "LoadBalancer"
             annotations:
-              metallb.io/loadBalancerIPs: {{ .Values.traefik.loadBalancerIP }}
+              metallb.io/loadBalancerIPs: 10.10.4.230
         ingressRoute:
           dashboard:
             enabled: false
