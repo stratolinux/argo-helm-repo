@@ -4,21 +4,6 @@ kind: Namespace
 apiVersion: v1
 metadata:
   name: {{ .Values.traefik.namespace }}
----
-# statically provisioned config PV
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: {{ .Values.traefik.configPVC }}
-  namespace: {{ .Values.traefik.namespace }}
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: longhorn
-  volumeMode: Filesystem
 
 ---
 # cloudflare secret, used to generate certs
@@ -31,20 +16,6 @@ metadata:
 stringData:
   CF_API_EMAIL: {{ .Values.traefik.cf_api_email }}
   CF_DNS_API_TOKEN: {{ .Values.traefik.cf_dns_api_token }}
----
-# config PVC
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Values.traefik.configPVC }}
-  namespace: {{ .Values.traefik.namespace }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  volumeName: {{ .Values.traefik.configPVC }}
 
 ---
 # traefik helm chart application
@@ -88,10 +59,11 @@ spec:
             enabled: false
         persistence:
           enabled: true
-          existingClaim: traefik
           name: data
           path: /data
           size: 1Gi
+          accessMode: ReadWriteOnce
+          storageClass: longhorn
         ingressClass:
           enabled: true
           isDefaultClass: true
