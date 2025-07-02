@@ -59,7 +59,6 @@ spec:
             enabled: false
         persistence:
           enabled: true
-          volumeName: traefik-data
           name: data
           path: /data
           size: 1Gi
@@ -97,8 +96,6 @@ spec:
           - "--entryPoints.websecure.proxyProtocol.insecure"
           - "--entryPoints.websecure.forwardedHeaders.insecure"
           - "--entrypoints.websecure.transport.respondingtimeouts.idletimeout=60"
-          #- "--entrypoints.websecure.transport.respondingtimeouts.readtimeout=60"
-          #- "--entrypoints.websecure.transport.respondingtimeouts.writetimeout=60"
           - "--providers.kubernetesingress.ingressendpoint.publishedservice={{ .Values.traefik.namespace }}/traefik"
         env:
           - name: CF_API_EMAIL
