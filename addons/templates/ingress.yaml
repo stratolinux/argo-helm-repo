@@ -59,6 +59,7 @@ spec:
             enabled: false
         persistence:
           enabled: true
+          volumeName: traefik-data
           name: data
           path: /data
           size: 1Gi
