@@ -74,17 +74,4 @@ spec:
      jsonPointers:
        - /spec/preserveUnknownFields
 
----
-apiVersion: longhorn.io/v1beta2
-kind: RecurringJob
-metadata:
-  name: scheduled-backuo
-  namespace: longhorn-system
-spec:
-  cron: "0,30 * * * *"
-  task: "backup"
-  groups:
-  - default
-  retain: 5
-  concurrency: 2
 {{ end }}
