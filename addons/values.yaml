@@ -2,6 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# the default storage class to use
+storageclass: longhorn
+
 metallb:
   enabled: true
   namespace: metallb-system
@@ -52,5 +55,8 @@ longhorn:
   enabled: false
   version: "1.9.0"
   namespace: longhorn-system
+  backup:
+    location: "nfs://host.name:/export/path"
+    secret: ""
   ingress:
     host: myhostname.mydomain

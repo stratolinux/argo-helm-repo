@@ -24,7 +24,7 @@ spec:
           enabled: true
           host: {{ .Values.longhorn.ingress.host }}
         defaultBackupStore:
-          backupTarget: nfs://rs822.internal.aceshome.com:/volume1/longhorn
+          backupTarget: {{ .Values.longhorn.backup.location }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .Values.longhorn.namespace }}

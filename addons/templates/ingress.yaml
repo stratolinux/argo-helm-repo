@@ -17,9 +17,9 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  nfs:
-    path: "{{ .Values.csinfs.share }}/{{ .Values.traefik.configPVC }}"
-    server: {{ .Values.csinfs.host }}
+  storageClassName: {{ .Values.storageclass }}
+  volumeMode: Filesystem
+
 ---
 # cloudflare secret, used to generate certs
 apiVersion: v1
