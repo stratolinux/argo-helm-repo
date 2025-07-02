@@ -68,9 +68,9 @@ spec:
     chart: traefik
     helm:
       valuesObject:
-#        service:
-#          annotations:
-#            metallb.io/loadBalancerIPs: 10.10.4.230
+        service:
+          annotations:
+            metallb.io/loadBalancerIPs: {{ .Values.traefik.loadBalancerIP }}
         logs:
           general:
             level: DEBUG
@@ -86,8 +86,8 @@ spec:
           service:
             type: "LoadBalancer"
 #            loadBalancerIP: 10.10.4.230
-            annotations:
-              metallb.io/loadBalancerIPs: {{ .Values.traefik.loadBalancerIP }}
+#            annotations:
+#              metallb.io/loadBalancerIPs: {{ .Values.traefik.loadBalancerIP }}
         ingressRoute:
           dashboard:
             enabled: false
