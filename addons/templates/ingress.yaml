@@ -68,9 +68,9 @@ spec:
     chart: traefik
     helm:
       valuesObject:
-        service:
-          annotations:
-            metallb.io/loadBalancerIPs: 10.10.4.230
+#        service:
+#          annotations:
+#            metallb.io/loadBalancerIPs: 10.10.4.230
         logs:
           general:
             level: DEBUG
@@ -85,7 +85,7 @@ spec:
         server:
           service:
             type: "LoadBalancer"
-            loadBalancerIP: 10.10.4.230
+#            loadBalancerIP: 10.10.4.230
             annotations:
               metallb.io/loadBalancerIPs: 10.10.4.230
         ingressRoute:
