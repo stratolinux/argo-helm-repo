@@ -18,7 +18,6 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: {{ .Values.storageclass }}
-  volumeMode: Filesystem
 
 ---
 # cloudflare secret, used to generate certs
