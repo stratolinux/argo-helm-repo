@@ -20,7 +20,7 @@ spec:
   source:
     repoURL: https://charts.jetstack.io
     chart: cert-manager
-    targetRevision: "{{ cluster.cert_manager.version }}"
+    targetRevision: "{{ .Values.cert_manager.version }}"
     helm:
       valuesObject:
         installCRDs: true
