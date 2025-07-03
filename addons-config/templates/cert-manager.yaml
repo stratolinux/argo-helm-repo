@@ -1,0 +1,31 @@
+{{ if .Values.cert_manager.enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cloudflare-issuer
+spec:
+  acme:
+    ...
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: cloudflare-credentials
+            key: api-token
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cluster-certificate
+spec:
+  secretName: cluster-certificate-tls
+  issuerRef:
+    name: letsencrypt-dns01-issuer
+    kind: ClusterIssuer
+  commonName: dev.stratolinux.io
+  dnsNames:
+  - dev.stratolinux.io
+  - '*.dev.stratolinux.io'
+
+{{ end }}
