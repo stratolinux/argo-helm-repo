@@ -5,6 +5,16 @@ kind: Namespace
 metadata:
   name: cert-manager
 ---
+# cloudflare secret, used to generate certs
+apiVersion: v1
+kind: Secret
+type: Opaque             
+metadata:
+  name: cloudflare-credentials
+  namespace: cert-manager
+stringData:
+  api-token: {{ .Values.traefik.cf_dns_api_token }}
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -31,4 +41,33 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cloudflare-issuer
+spec:
+  acme:
+    ...
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: cloudflare-credentials
+            key: api-token
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cluster-certificate
+spec:
+  secretName: cluster-certificate-tls
+  issuerRef:
+    name: letsencrypt-dns01-issuer
+    kind: ClusterIssuer
+  commonName: dev.stratolinux.io
+  dnsNames:
+  - dev.stratolinux.io
+  - '*.dev.stratolinux.io'
+
 {{ end }}
