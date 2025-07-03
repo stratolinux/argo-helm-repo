@@ -23,7 +23,7 @@ metadata:
 spec:
   secretName: cluster-certificate-tls
   issuerRef:
-    name: letsencrypt-dns01-issuer
+    name: cloudflare-issuer
     kind: ClusterIssuer
   commonName: dev.stratolinux.io
   dnsNames:
