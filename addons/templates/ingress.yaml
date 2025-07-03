@@ -48,7 +48,7 @@ spec:
           websecure:
             tls:
               enabled: true
-              certResolver: cloudflare
+#              certResolver: cloudflare
         ingressRoute:
           dashboard:
             enabled: false
