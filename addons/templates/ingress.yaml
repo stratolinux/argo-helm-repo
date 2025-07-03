@@ -41,9 +41,9 @@ spec:
 #          type: "LoadBalancer"
           annotations:
             metallb.io/loadBalancerIPs: {{ .Values.traefik.loadBalancerIP }}
-#        ingress:
-#          annotations:
-#            cert-manager.io/cluster-issuer: "cloudflare-issuer"
+        ingress:
+          annotations:
+            cert-manager.io/cluster-issuer: "cloudflare-issuer"
 #        ports:
 #          web:
 #            redirectTo:
