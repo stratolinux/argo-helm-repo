@@ -7,6 +7,8 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-dns01-private-key
     solvers:
     - dns01:
         cloudflare:
