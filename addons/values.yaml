@@ -39,7 +39,7 @@ csinfs:
 
 traefik:
   enabled: true
-  version: "v27.0.0"
+  version: "36.3.0"
   namespace: traefik
   configPVC: traefik
   cf_api_email: "myemailaddress"
