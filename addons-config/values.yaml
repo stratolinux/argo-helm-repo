@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 metallb:
-  enabled: true
+  enabled: false
   namespace: metallb-system
   version: "v0.14.5"
   # default-addresses can be auto assigned
@@ -14,7 +14,7 @@ metallb:
     - 10.10.90.120/30
 
 volsync:
-  enabled: true
+  enabled: false
   namespace: volsync-system
   version: "0.9.1"
   endpoint: http://my.s3.provider:port/bucket
@@ -22,7 +22,7 @@ volsync:
   aws_secret_access_key: "aws_secret_access_key"
 
 traefik:
-  enabled: true
+  enabled: false
   version: "v27.0.0"
   namespace: traefik
   configPVC: traefik
