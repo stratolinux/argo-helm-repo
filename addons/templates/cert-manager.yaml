@@ -1,4 +1,4 @@
-{{ if cluster.cert_manager.enabled }}
+{{ if .Values.cert_manager.enabled }}
 ---
 apiVersion: v1
 kind: Namespace
