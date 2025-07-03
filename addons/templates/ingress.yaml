@@ -33,7 +33,7 @@ spec:
   project: default
   source:
     repoURL: https://traefik.github.io/charts
-    targetRevision: "{{ .Values.traefik.version }}"
+    targetRevision: "v27.0.0"
     chart: traefik
     helm:
       valuesObject:
