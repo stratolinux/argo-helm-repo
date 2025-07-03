@@ -35,7 +35,7 @@ spec:
     repoURL: https://traefik.github.io/charts
     targetRevision: "{{ .Values.traefik.version }}"
     chart: traefik
-3    helm:
+#    helm:
 #      valuesObject:
 #        service:
 #          type: "LoadBalancer"
