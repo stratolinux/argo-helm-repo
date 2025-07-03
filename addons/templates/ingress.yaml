@@ -38,23 +38,23 @@ spec:
     helm:
       valuesObject:
         service:
-          type: "LoadBalancer"
+#          type: "LoadBalancer"
           annotations:
             metallb.io/loadBalancerIPs: {{ .Values.traefik.loadBalancerIP }}
-        ports:
-          web:
-            redirectTo:
-              port: websecure
-          websecure:
-            tls:
-              enabled: true
+#        ports:
+#          web:
+#            redirectTo:
+#              port: websecure
+#          websecure:
+#            tls:
+#              enabled: true
 #              certResolver: cloudflare
-        ingressRoute:
-          dashboard:
-            enabled: false
-        ingressClass:
-          enabled: true
-          isDefaultClass: true
+#        ingressRoute:
+#          dashboard:
+#            enabled: false
+#        ingressClass:
+#          enabled: true
+#          isDefaultClass: true
 #        additionalArguments:
 #          - "--certificatesresolvers.cloudflare.acme.dnsChallenge=true"
 #          - "--certificatesResolvers.cloudflare.acme.dnsChallenge.provider=cloudflare"
