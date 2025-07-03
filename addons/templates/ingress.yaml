@@ -33,16 +33,14 @@ spec:
   project: default
   source:
     repoURL: https://traefik.github.io/charts
-    targetRevision: "v27.0.0"
+    targetRevision: "{{ .Values.traefik.version }}"
     chart: traefik
     helm:
       valuesObject:
         service:
+          type: "LoadBalancer"
           annotations:
             metallb.io/loadBalancerIPs: {{ .Values.traefik.loadBalancerIP }}
-        logs:
-          general:
-            level: DEBUG
         ports:
           web:
             redirectTo:
@@ -51,40 +49,12 @@ spec:
             tls:
               enabled: true
               certResolver: cloudflare
-        server:
-          service:
-            type: "LoadBalancer"
         ingressRoute:
           dashboard:
             enabled: false
-        persistence:
-          enabled: true
-#          volumeName: traefik-data
-          name: data
-          path: /data
-          size: 1Gi
-          accessMode: ReadWriteOnce
-          storageClass: longhorn
         ingressClass:
           enabled: true
           isDefaultClass: true
-        deployment:
-          initContainers:
-            - name: volume-permissions
-              image: traefik:v2.11
-              command:
-                [
-                  "sh",
-                  "-c",
-                  "touch /data/acme.json; chown -R 65532:65532 /data; chmod -v 777 /data; chmod -v 600 /data/acme.json",
-                ]
-              securityContext:
-                runAsNonRoot: false
-                runAsGroup: 0
-                runAsUser: 0
-              volumeMounts:
-                - name: data
-                  mountPath: /data
         additionalArguments:
           - "--certificatesresolvers.cloudflare.acme.dnsChallenge=true"
           - "--certificatesResolvers.cloudflare.acme.dnsChallenge.provider=cloudflare"
