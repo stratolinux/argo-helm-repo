@@ -1,4 +1,4 @@
-{{ if .Values.cert_manager.enabled }}
+{{ if .Values.cert_manager.notenabled }}
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
