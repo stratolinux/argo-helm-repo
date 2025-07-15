@@ -17,7 +17,7 @@ metadata:
 spec:
   acme:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
-    email: {{ .Values.traefik.cf_account_email }}
+    email: {{ .Values.traefik.cf_api_email }}
     privateKeySecretRef:
       name: letsencrypt-dns01-private-key
     solvers:
