@@ -7,12 +7,8 @@ metadata:
   name: default
   namespace: {{ .Values.traefik.namespace }}
 spec:
-  defaultGeneratedCert:
-    resolver: cloudflare
-    domain:
-      main: {{ .Values.traefik.default_cert.main | quote }}
-{{- if .Values.traefik.default_cert.sans }}
-      sans: [ "{{ join "\",\"" .Values.traefik.default_cert.sans }}" ]
+  defaultCertificate:
+    secretName: default-certificate-secret
 {{ end }}
 {{ end }}
 {{ end }}
