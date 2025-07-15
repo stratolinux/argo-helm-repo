@@ -12,6 +12,7 @@ metadata:
 spec:
   destination:
     name: in-cluster
+    namespace: {{ .Values.reflector.namespace }}
   project: default
   source:
     repoURL: https://emberstack.github.io/helm-charts
