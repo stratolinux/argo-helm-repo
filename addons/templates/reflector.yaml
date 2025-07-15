@@ -1,0 +1,28 @@
+
+{{ if .Values.reflector.enabled }}
+---
+# reflector release
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: reflector-release
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+  project: default
+  source:
+    repoURL: https://emberstack.github.io/helm-charts
+    targetRevision: "9.1.22"
+    chart: reflector
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - Validate=false
+{{ end }}
