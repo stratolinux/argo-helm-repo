@@ -33,7 +33,6 @@ spec:
     targetRevision: "{{ .Values.cert_manager.version }}"
     helm:
       valuesObject:
-        installCRDs: true
         crds:
           enabled: true
         extraArgs:
