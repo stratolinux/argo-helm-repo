@@ -43,11 +43,11 @@ spec:
             metallb.io/loadBalancerIPs: {{ .Values.traefik.loadBalancerIP }}
         ingress:
           annotations:
-            cert-manager.io/cluster-issuer: "cloudflare-issuer"
-        ports:
-          web:
-            redirectTo:
-              port: websecure
+            cert-manager.io/cluster-issuer: "cloudflare-clusterissuer"
+#        ports:
+#          web:
+#            redirectTo:
+#              port: websecure
 #          websecure:
 #            tls:
 #              enabled: true
