@@ -5,6 +5,10 @@
 # the default storage class to use
 storageclass: longhorn
 
+reflector:
+  enabled: false
+  namespace: kube-system
+
 metallb:
   enabled: false
   namespace: metallb-system
