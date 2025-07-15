@@ -23,6 +23,8 @@ spec:
         ingress:
           enabled: true
           host: {{ .Values.longhorn.ingress.host }}
+          tls: true
+          tlsSecret: longhorn-certificate
         defaultBackupStore:
           backupTarget: {{ .Values.longhorn.backup.location }}
   destination:
