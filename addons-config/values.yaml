@@ -2,6 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# the default storage class to use
+storageclass: longhorn
+
 reflector:
   enabled: false
   version: "9.1.22"
@@ -15,6 +18,16 @@ cert_manager:
   cf_api_dns_token: "apitoken"
   issuer: "cloudflare-clusterissuer"
   default_certificate_secret: default-certificate-secret
+
+metallb:
+  enabled: false
+  namespace: metallb-system
+  version: "v0.15.2"
+  default_addresses:
+    - 10.10.90.100-10.10.90.110
+  # reserved address must be explicity requested in the service definition
+  reserved_addresses:
+    - 10.10.90.120/30
 
 traefik:
   enabled: false
@@ -31,14 +44,33 @@ longhorn:
   ingress:
     host: myhostname.mydomain
 
-metallb:
+# legacy stuff below
+volsync:
   enabled: false
-  namespace: metallb-system
-  version: "v0.15.2
-  default_addresses:
-    - 10.10.90.100-10.10.90.110
-  # reserved address must be explicity requested in the service definition
-  reserved_addresses:
-    - 10.10.90.120/30
+  namespace: volsync-system
+  version: "0.9.1"
+  endpoint: http://my.s3.provider:port/bucket
+  aws_access_key_id: "aws_access_key_id"
+  aws_secret_access_key: "aws_secret_access_key"
+
+csismb:
+  enabled: false
+  version: "v1.14.0"
+  username: user
+  password: password
+  share: smb.server.name/share
+
+csinfs:
+  enabled: false
+  version: "v4.7.0"
+  host: nfs.server.name
+  share: /share
+
+ceph:
+  enabled: false
+  namespace: rook-ceph
+  dashPassword: myPassword
+  ingress:
+    host: myhostname.mydomain
 
 
