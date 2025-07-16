@@ -43,7 +43,10 @@ spec:
   issuerRef:
     name: {{ .Values.cert_manager.issuer }}
     kind: ClusterIssuer
-  dnsNames: {{ .Values.cert_manager.default_domains }}
+  dnsNames:
+  {{- range .Values.cert_manager.default_domains }}
+    - {{ . | title | quote }}
+  {{- end }}
   secretTemplate:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
