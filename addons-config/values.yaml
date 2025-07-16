@@ -16,16 +16,6 @@ cert_manager:
   issuer: "cloudflare-clusterissuer"
   default_certificate_secret: default-certificate-secret
 
-metallb:
-  enabled: false
-  namespace: metallb-system
-  version: "v0.15.2
-  default_addresses:
-    - 10.10.90.100-10.10.90.110
-  # reserved address must be explicity requested in the service definition
-  reserved_addresses:
-    - 10.10.90.120/30
-
 traefik:
   enabled: false
   version: "36.3.0"
@@ -40,3 +30,15 @@ longhorn:
     secret: ""
   ingress:
     host: myhostname.mydomain
+
+metallb:
+  enabled: false
+  namespace: metallb-system
+  version: "v0.15.2
+  default_addresses:
+    - 10.10.90.100-10.10.90.110
+  # reserved address must be explicity requested in the service definition
+  reserved_addresses:
+    - 10.10.90.120/30
+
+
