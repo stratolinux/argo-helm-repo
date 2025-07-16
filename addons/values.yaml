@@ -18,6 +18,7 @@ cert_manager:
   cf_api_dns_token: "apitoken"
   issuer: "cloudflare-clusterissuer"
   default_certificate_secret: default-certificate-secret
+  server: "staging"
 
 metallb:
   enabled: false

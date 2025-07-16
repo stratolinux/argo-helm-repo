@@ -16,7 +16,13 @@ metadata:
   namespace: {{ .Values.cert_manager.namespace }}
 spec:
   acme:
+{{ if eq .Values.cert_manager.server "staging" }}
     server: https://acme-staging-v02.api.letsencrypt.org/directory
+{{ else if eq .Values.cert_manger.server "production" }}
+    server: https://acme-v02.api.letsencrypt.org/directory
+{{ else }}
+    server: {{ .Values.cert_manager.server }}
+{{ end }}
     email: {{ .Values.cert_manager.cf_api_email }}
     privateKeySecretRef:
       name: letsencrypt-dns01-private-key
