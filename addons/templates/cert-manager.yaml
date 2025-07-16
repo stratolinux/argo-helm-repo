@@ -1,9 +1,10 @@
 {{ if .Values.cert_manager.enabled }}
 ---
+# namespace
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: cert-manager
+  name: {{ .Values.cert_manager.namespace }}
 ---
 # cloudflare secret, used to generate certs
 apiVersion: v1
@@ -11,9 +12,9 @@ kind: Secret
 type: Opaque             
 metadata:
   name: cloudflare-credentials
-  namespace: cert-manager
+  namespace: {{ .Values.cert_manager.namespace }}
 stringData:
-  api-token: {{ .Values.traefik.cf_dns_api_token }}
+  api-token: {{ .Values.cert_manager.cf_api_dns_token }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -25,7 +26,7 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: cert-manager
+    namespace: {{ .Values.cert_manager.namespace }}
   project: default
   source:
     repoURL: https://charts.jetstack.io
@@ -45,6 +46,5 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-
 
 {{ end }}
