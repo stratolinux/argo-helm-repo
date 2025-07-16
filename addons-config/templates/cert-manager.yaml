@@ -7,7 +7,7 @@ metadata:
   namespace: {{ .Values.cert_manager.namespace }}
 type: Opaque
 stringData:
-  api-token: {{  .Values.cert_manager.cf_dns_api_token }}
+  api-token: {{ .Values.cert_manager.cf_dns_api_token }}
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
