@@ -7,5 +7,5 @@ metadata:
   namespace: {{ .Values.traefik.namespace }}
 spec:
   defaultCertificate:
-    secretName: {{ default-certificate-secret }}
+    secretName: {{ .Values.cert_manager.default_certificate_secret }}
 {{ end }}

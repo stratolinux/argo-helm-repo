@@ -33,7 +33,7 @@ metadata:
   name: default-certificate
   namespace: default
 spec:
-  secretName: {{ default-certificate-secret }}
+  secretName: {{ .Values.cert_manager.default_certificate_secret }}
   issuerRef:
     name: {{ .Values.cert_manager.issuer }}
     kind: ClusterIssuer
