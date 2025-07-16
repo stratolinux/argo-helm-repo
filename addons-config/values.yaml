@@ -19,6 +19,9 @@ cert_manager:
   issuer: "cloudflare-clusterissuer"
   default_certificate_secret: default-certificate-secret
   server: "staging"
+  default_domains:
+    - "my.domain"
+    - "*.my.domain"
 
 metallb:
   enabled: false
