@@ -1,22 +1,10 @@
 {{ if .Values.traefik.enabled }}
 ---
+# namespace
 kind: Namespace
 apiVersion: v1
 metadata:
   name: {{ .Values.traefik.namespace }}
-
----
-# cloudflare secret, used to generate certs
-apiVersion: v1
-kind: Secret
-type: Opaque             
-metadata:
-  name: cloudflare-credentials
-  namespace: {{ .Values.traefik.namespace }}
-stringData:
-  CF_API_EMAIL: {{ .Values.traefik.cf_api_email }}
-  CF_DNS_API_TOKEN: {{ .Values.traefik.cf_dns_api_token }}
-
 ---
 # traefik helm chart application
 apiVersion: argoproj.io/v1alpha1
@@ -38,50 +26,11 @@ spec:
     helm:
       valuesObject:
         service:
-#          type: "LoadBalancer"
           annotations:
             metallb.io/loadBalancerIPs: {{ .Values.traefik.loadBalancerIP }}
         ingress:
           annotations:
-            cert-manager.io/cluster-issuer: "cloudflare-clusterissuer"
-#        ports:
-#          web:
-#            redirectTo:
-#              port: websecure
-#          websecure:
-#            tls:
-#              enabled: true
-#              certResolver: cloudflare
-#        ingressRoute:
-#          dashboard:
-#            enabled: false
-#        ingressClass:
-#          enabled: true
-#          isDefaultClass: true
-#        additionalArguments:
-#          - "--certificatesresolvers.cloudflare.acme.dnsChallenge=true"
-#          - "--certificatesResolvers.cloudflare.acme.dnsChallenge.provider=cloudflare"
-#          - "--certificatesResolvers.cloudflare.acme.email=eric@aceshome.com"
-#          - "--certificatesResolvers.cloudflare.acme.dnsChallenge.resolvers=1.1.1.1"
-#          - "--certificatesResolvers.cloudflare.acme.storage=/data/acme.json"
-#          - "--serversTransport.insecureSkipVerify=true"
-#          - "--entryPoints.web.proxyProtocol.insecure"
-#          - "--entryPoints.web.forwardedHeaders.insecure"
-#          - "--entryPoints.websecure.proxyProtocol.insecure"
-#          - "--entryPoints.websecure.forwardedHeaders.insecure"
-#          - "--entrypoints.websecure.transport.respondingtimeouts.idletimeout=60"
-#          - "--providers.kubernetesingress.ingressendpoint.publishedservice={{ .Values.traefik.namespace }}/traefik"
-#        env:
-#          - name: CF_API_EMAIL
-#            valueFrom:
-#              secretKeyRef:
-#                key: CF_API_EMAIL
-#                name:  cloudflare-credentials
-#          - name: CF_DNS_API_TOKEN
-#            valueFrom:
-#              secretKeyRef:
-#                key: CF_DNS_API_TOKEN
-#                name:  cloudflare-credentials
+            cert-manager.io/cluster-issuer: {{ .Values.cert_manager.issuer }}
   syncPolicy:
     automated:
       prune: true
