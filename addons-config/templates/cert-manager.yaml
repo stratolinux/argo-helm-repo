@@ -45,7 +45,7 @@ spec:
     kind: ClusterIssuer
   dnsNames:
   {{- range .Values.cert_manager.default_domains }}
-    - {{ . | title | quote }}
+    - {{ . | quote }}
   {{- end }}
   secretTemplate:
     annotations:
