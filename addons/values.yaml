@@ -2,8 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# -- setiings for reflector, https://github.com/emberstack/kubernetes-reflector
 reflector:
-  # -- flag to enable or disable the deployment of https://github.com/emberstack/kubernetes-reflector
+  # -- flag to enable or disable the deployment
   enabled: false
 
   # -- version of reflector helm chart from https://emberstack.github.io/helm-charts
@@ -11,8 +12,6 @@ reflector:
 
   # -- target namespace for reflector
   namespace: kube-system
-
-
 
 cert_manager:
   enabled: false
