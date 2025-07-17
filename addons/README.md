@@ -42,9 +42,9 @@ A Helm chart for basic K8s services
 | metallb.namespace | string | `"metallb-system"` |  |
 | metallb.reserved_addresses[0] | string | `"10.10.90.120/30"` |  |
 | metallb.version | string | `"v0.15.2"` |  |
-| reflector.enabled | bool | `false` |  |
-| reflector.namespace | string | `"kube-system"` |  |
-| reflector.version | string | `"9.1.22"` |  |
+| reflector.enabled | bool | `false` | flag to enable or disable the deployment of https://github.com/emberstack/kubernetes-reflector |
+| reflector.namespace | string | `"kube-system"` | target namespace for reflector |
+| reflector.version | string | `"9.1.22"` | version of reflector helm chart from https://emberstack.github.io/helm-charts |
 | traefik.enabled | bool | `false` |  |
 | traefik.namespace | string | `"traefik"` |  |
 | traefik.version | string | `"36.3.0"` |  |
