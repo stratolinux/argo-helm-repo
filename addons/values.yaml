@@ -2,56 +2,76 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- setiings for reflector, https://github.com/emberstack/kubernetes-reflector
 reflector:
-  # -- flag to enable or disable the deployment
+  # -- flag to enable or disable the deployment of https://github.com/emberstack/kubernetes-reflector
   enabled: false
-
   # -- version of reflector helm chart from https://emberstack.github.io/helm-charts
   version: "9.1.22"
-
   # -- target namespace for reflector
   namespace: kube-system
 
 cert_manager:
+  # -- flag to enable or disable cert-manager
   enabled: false
+  # -- version of cert-manager helm chart from https://charts.jetstack.io
   version: "v1.18.2"
+  # -- target namespace for cert-manager
   namespace: cert-manager
+  # -- cloudflare email address
   cf_api_email: "myemailaddress"
+  # -- cloudflare API token
   cf_api_dns_token: "apitoken"
+  # -- name of the ClusterIssuer to be created
   issuer: "cloudflare-clusterissuer"
+  # -- name of the secret that will hold the default certificate
   default_certificate_secret: default-certificate-secret
+  # -- LetsEncrypt server to use, should be `staging` or `production`
   server: "staging"
+  # -- list of domains to be valid in the default certificate
   default_domains:
     - "my.domain"
     - "*.my.domain"
 
 metallb:
+  # -- flag to enable or disable metallb
   enabled: false
+  # -- target namespace for metallb
   namespace: metallb-system
+  # -- version of the metallb chart from https://metallb.github.io/metallb
   version: "v0.15.2"
+  # -- list of address ranges for automatically assignable addresses
   default_addresses:
     - 10.10.90.100-10.10.90.110
-  # reserved address must be explicity requested in the service definition
+  # -- list of address ranges that need to be explictly requested for an Ingress/Service
   reserved_addresses:
     - 10.10.90.120/30
 
 traefik:
+  # -- flag to enable or disable traefik
   enabled: false
+  # -- version of the traefik helm chart from https://traefik.github.io/charts
   version: "36.3.0"
+  # -- target namespace for traefik
   namespace: traefik
 
 longhorn:
+  # -- flag to enable or disable longhorn
   enabled: false
+  # -- version of the longhorn helm chart from https://charts.longhorn.io
   version: "1.9.0"
+  # -- target namespace for longhorn
   namespace: longhorn-system
   backup:
+    # -- backup target for longhorn volumes, and optional secret with credentials
     location: "nfs://host.name:/export/path"
+    # -- optional, existing, secret if neededd to access the backup location
     secret: ""
   ingress:
+    # -- hostname for ingress to the longhorn dasshboard
     host: myhostname.mydomain
 
 # legacy stuff below
+# -- obsolete settings for volsync. Do not use
 volsync:
   enabled: false
   namespace: volsync-system
@@ -59,20 +79,20 @@ volsync:
   endpoint: http://my.s3.provider:port/bucket
   aws_access_key_id: "aws_access_key_id"
   aws_secret_access_key: "aws_secret_access_key"
-
+# -- obsolete settings for csismb. Do not use
 csismb:
   enabled: false
   version: "v1.14.0"
   username: user
   password: password
   share: smb.server.name/share
-
+# -- obsolete settings for csinfs. Do not use
 csinfs:
   enabled: false
   version: "v4.7.0"
   host: nfs.server.name
   share: /share
-
+# -- obsolete settings for ceph. Do not use
 ceph:
   enabled: false
   namespace: rook-ceph

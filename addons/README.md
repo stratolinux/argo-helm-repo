@@ -8,53 +8,36 @@ A Helm chart for basic K8s services
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| ceph.dashPassword | string | `"myPassword"` |  |
-| ceph.enabled | bool | `false` |  |
-| ceph.ingress.host | string | `"myhostname.mydomain"` |  |
-| ceph.namespace | string | `"rook-ceph"` |  |
-| cert_manager.cf_api_dns_token | string | `"apitoken"` |  |
-| cert_manager.cf_api_email | string | `"myemailaddress"` |  |
-| cert_manager.default_certificate_secret | string | `"default-certificate-secret"` |  |
-| cert_manager.default_domains[0] | string | `"my.domain"` |  |
-| cert_manager.default_domains[1] | string | `"*.my.domain"` |  |
-| cert_manager.enabled | bool | `false` |  |
-| cert_manager.issuer | string | `"cloudflare-clusterissuer"` |  |
-| cert_manager.namespace | string | `"cert-manager"` |  |
-| cert_manager.server | string | `"staging"` |  |
-| cert_manager.version | string | `"v1.18.2"` |  |
-| csinfs.enabled | bool | `false` |  |
-| csinfs.host | string | `"nfs.server.name"` |  |
-| csinfs.share | string | `"/share"` |  |
-| csinfs.version | string | `"v4.7.0"` |  |
-| csismb.enabled | bool | `false` |  |
-| csismb.password | string | `"password"` |  |
-| csismb.share | string | `"smb.server.name/share"` |  |
-| csismb.username | string | `"user"` |  |
-| csismb.version | string | `"v1.14.0"` |  |
-| longhorn.backup.location | string | `"nfs://host.name:/export/path"` |  |
-| longhorn.backup.secret | string | `""` |  |
-| longhorn.enabled | bool | `false` |  |
-| longhorn.ingress.host | string | `"myhostname.mydomain"` |  |
-| longhorn.namespace | string | `"longhorn-system"` |  |
-| longhorn.version | string | `"1.9.0"` |  |
-| metallb.default_addresses[0] | string | `"10.10.90.100-10.10.90.110"` |  |
-| metallb.enabled | bool | `false` |  |
-| metallb.namespace | string | `"metallb-system"` |  |
-| metallb.reserved_addresses[0] | string | `"10.10.90.120/30"` |  |
-| metallb.version | string | `"v0.15.2"` |  |
-| reflector | object | `{"enabled":false,"namespace":"kube-system","version":"9.1.22"}` | setiings for reflector, https://github.com/emberstack/kubernetes-reflector |
-| reflector.enabled | bool | `false` | flag to enable or disable the deployment |
+| ceph | object | `{"dashPassword":"myPassword","enabled":false,"ingress":{"host":"myhostname.mydomain"},"namespace":"rook-ceph"}` | obsolete settings for ceph. Do not use |
+| cert_manager.cf_api_dns_token | string | `"apitoken"` | cloudflare API token |
+| cert_manager.cf_api_email | string | `"myemailaddress"` | cloudflare email address |
+| cert_manager.default_certificate_secret | string | `"default-certificate-secret"` | name of the secret that will hold the default certificate |
+| cert_manager.default_domains | list | `["my.domain","*.my.domain"]` | list of domains to be valid in the default certificate |
+| cert_manager.enabled | bool | `false` | flag to enable or disable cert-manager |
+| cert_manager.issuer | string | `"cloudflare-clusterissuer"` | name of the ClusterIssuer to be created |
+| cert_manager.namespace | string | `"cert-manager"` | target namespace for cert-manager |
+| cert_manager.server | string | `"staging"` | LetsEncrypt server to use, should be `staging` or `production` |
+| cert_manager.version | string | `"v1.18.2"` | version of cert-manager helm chart from https://charts.jetstack.io |
+| csinfs | object | `{"enabled":false,"host":"nfs.server.name","share":"/share","version":"v4.7.0"}` | obsolete settings for csinfs. Do not use |
+| csismb | object | `{"enabled":false,"password":"password","share":"smb.server.name/share","username":"user","version":"v1.14.0"}` | obsolete settings for csismb. Do not use |
+| longhorn.backup.location | string | `"nfs://host.name:/export/path"` | backup target for longhorn volumes, and optional secret with credentials |
+| longhorn.backup.secret | string | `""` | optional, existing, secret if neededd to access the backup location |
+| longhorn.enabled | bool | `false` | flag to enable or disable longhorn |
+| longhorn.ingress.host | string | `"myhostname.mydomain"` | hostname for ingress to the longhorn dasshboard |
+| longhorn.namespace | string | `"longhorn-system"` | target namespace for longhorn |
+| longhorn.version | string | `"1.9.0"` | version of the longhorn helm chart from https://charts.longhorn.io |
+| metallb.default_addresses | list | `["10.10.90.100-10.10.90.110"]` | list of address ranges for automatically assignable addresses |
+| metallb.enabled | bool | `false` | flag to enable or disable metallb |
+| metallb.namespace | string | `"metallb-system"` | target namespace for metallb |
+| metallb.reserved_addresses | list | `["10.10.90.120/30"]` | list of address ranges that need to be explictly requested for an Ingress/Service |
+| metallb.version | string | `"v0.15.2"` | version of the metallb chart from https://metallb.github.io/metallb |
+| reflector.enabled | bool | `false` | flag to enable or disable the deployment of https://github.com/emberstack/kubernetes-reflector |
 | reflector.namespace | string | `"kube-system"` | target namespace for reflector |
 | reflector.version | string | `"9.1.22"` | version of reflector helm chart from https://emberstack.github.io/helm-charts |
-| traefik.enabled | bool | `false` |  |
-| traefik.namespace | string | `"traefik"` |  |
-| traefik.version | string | `"36.3.0"` |  |
-| volsync.aws_access_key_id | string | `"aws_access_key_id"` |  |
-| volsync.aws_secret_access_key | string | `"aws_secret_access_key"` |  |
-| volsync.enabled | bool | `false` |  |
-| volsync.endpoint | string | `"http://my.s3.provider:port/bucket"` |  |
-| volsync.namespace | string | `"volsync-system"` |  |
-| volsync.version | string | `"0.9.1"` |  |
+| traefik.enabled | bool | `false` | flag to enable or disable traefik |
+| traefik.namespace | string | `"traefik"` | target namespace for traefik |
+| traefik.version | string | `"36.3.0"` | version of the traefik helm chart from https://traefik.github.io/charts |
+| volsync | object | `{"aws_access_key_id":"aws_access_key_id","aws_secret_access_key":"aws_secret_access_key","enabled":false,"endpoint":"http://my.s3.provider:port/bucket","namespace":"volsync-system","version":"0.9.1"}` | obsolete settings for volsync. Do not use |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)
