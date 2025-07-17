@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.5/.schema/devbox.schema.json",
   "packages": [
     "pre-commit@latest",
-    "helm-docs@latest"
+    "helm-docs@latest",
+    "kubernetes-helm@latest"
   ],
   "env": {
     "LC_ALL": "C.UTF-8",
