@@ -45,7 +45,6 @@ A Helm chart for basic K8s services
 | reflector.enabled | bool | `false` |  |
 | reflector.namespace | string | `"kube-system"` |  |
 | reflector.version | string | `"9.1.22"` |  |
-| storageclass | string | `"longhorn"` |  |
 | traefik.enabled | bool | `false` |  |
 | traefik.namespace | string | `"traefik"` |  |
 | traefik.version | string | `"36.3.0"` |  |

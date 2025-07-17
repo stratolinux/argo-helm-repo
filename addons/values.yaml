@@ -2,13 +2,16 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# the default storage class to use
-storageclass: longhorn
-
 reflector:
   enabled: false
+  # flag to enable or disable the deployment of https://github.com/emberstack/kubernetes-reflector
+
   version: "9.1.22"
+  # version of reflector helm chart from https://emberstack.github.io/helm-charts
+
   namespace: kube-system
+  # target namespace for reflector
+
 
 cert_manager:
   enabled: false
