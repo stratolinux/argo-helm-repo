@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.5/.schema/devbox.schema.json",
+  "packages": [
+    "pre-commit@latest",
+    "helm-docs@latest"
+  ],
+  "env": {
+    "LC_ALL": "C.UTF-8",
+    "LANG":   "C.UTF-8"
+  },
+  "shell": {
+    "init_hook": [
+      "pre-commit install"
+    ],
+    "scripts": {
+      "test": [
+        "echo \"Error: no test specified\" && exit 1"
+      ]
+    }
+  }
+}
