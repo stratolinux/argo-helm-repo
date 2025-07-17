@@ -1,8 +1,8 @@
-# addons-app-of-apps
+# addons
 
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
-A Helm chart basic K8s services
+A Helm chart for basic K8s services
 
 ## Values
 
@@ -15,9 +15,12 @@ A Helm chart basic K8s services
 | cert_manager.cf_api_dns_token | string | `"apitoken"` |  |
 | cert_manager.cf_api_email | string | `"myemailaddress"` |  |
 | cert_manager.default_certificate_secret | string | `"default-certificate-secret"` |  |
+| cert_manager.default_domains[0] | string | `"my.domain"` |  |
+| cert_manager.default_domains[1] | string | `"*.my.domain"` |  |
 | cert_manager.enabled | bool | `false` |  |
 | cert_manager.issuer | string | `"cloudflare-clusterissuer"` |  |
 | cert_manager.namespace | string | `"cert-manager"` |  |
+| cert_manager.server | string | `"staging"` |  |
 | cert_manager.version | string | `"v1.18.2"` |  |
 | csinfs.enabled | bool | `false` |  |
 | csinfs.host | string | `"nfs.server.name"` |  |

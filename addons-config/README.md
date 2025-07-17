@@ -15,9 +15,12 @@ A Helm chart basic K8s services
 | cert_manager.cf_api_dns_token | string | `"apitoken"` |  |
 | cert_manager.cf_api_email | string | `"myemailaddress"` |  |
 | cert_manager.default_certificate_secret | string | `"default-certificate-secret"` |  |
+| cert_manager.default_domains[0] | string | `"my.domain"` |  |
+| cert_manager.default_domains[1] | string | `"*.my.domain"` |  |
 | cert_manager.enabled | bool | `false` |  |
 | cert_manager.issuer | string | `"cloudflare-clusterissuer"` |  |
 | cert_manager.namespace | string | `"cert-manager"` |  |
+| cert_manager.server | string | `"staging"` |  |
 | cert_manager.version | string | `"v1.18.2"` |  |
 | csinfs.enabled | bool | `false` |  |
 | csinfs.host | string | `"nfs.server.name"` |  |
