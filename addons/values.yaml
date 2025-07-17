@@ -70,34 +70,4 @@ longhorn:
     # -- hostname for ingress to the longhorn dasshboard
     host: myhostname.mydomain
 
-# legacy stuff below
-# -- obsolete settings for volsync. Do not use
-volsync:
-  enabled: false
-  namespace: volsync-system
-  version: "0.9.1"
-  endpoint: http://my.s3.provider:port/bucket
-  aws_access_key_id: "aws_access_key_id"
-  aws_secret_access_key: "aws_secret_access_key"
-# -- obsolete settings for csismb. Do not use
-csismb:
-  enabled: false
-  version: "v1.14.0"
-  username: user
-  password: password
-  share: smb.server.name/share
-# -- obsolete settings for csinfs. Do not use
-csinfs:
-  enabled: false
-  version: "v4.7.0"
-  host: nfs.server.name
-  share: /share
-# -- obsolete settings for ceph. Do not use
-ceph:
-  enabled: false
-  namespace: rook-ceph
-  dashPassword: myPassword
-  ingress:
-    host: myhostname.mydomain
-
 
