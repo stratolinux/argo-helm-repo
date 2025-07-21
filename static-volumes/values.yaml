@@ -1,0 +1,16 @@
+# Default values
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+static-volumes:
+  # -- flag to enable or disable static-volumes.
+  # A list of NFS volumes will also be required, consult the Charts values.yaml file for examples
+  enabled: false
+
+  # static-volumes.nfs -- list of nfs exports to create
+  # nfs:
+  #   - name: foo
+  #     server: nfs.server.name
+  #     path: "/path/to/export"
+
+
