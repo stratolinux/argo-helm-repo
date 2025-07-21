@@ -1,0 +1,21 @@
+{{ if .Values.static-volumes.enabled }}
+{{ range $v := .Values.static-volumes.nfs }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ $v.name}}
+spec:
+  storageClassName: nfs-static-storage-class # same storage class as pvc
+  capacity:
+    storage: 100Mi
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteMany # pvc must match
+  nfs:
+    server: {{ $v.server}}
+    path: {{ $v.path }}
+{{ end }}
+{{ end }}
+
