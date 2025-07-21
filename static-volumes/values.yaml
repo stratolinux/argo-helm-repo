@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-static-volumes:
+static_volumes:
   # -- flag to enable or disable static-volumes.
   # A list of NFS volumes will also be required, consult the Charts values.yaml file for examples
   enabled: false

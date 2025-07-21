@@ -1,6 +1,5 @@
-{{ if .Values.static-volumes.enabled }}
-{{ range $v := .Values.static-volumes.nfs }}
----
+{{ if .Values.static_volumes.enabled }}
+{{ range $v := .Values.static_volumes.nfs }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
