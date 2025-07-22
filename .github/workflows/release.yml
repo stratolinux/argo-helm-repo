@@ -12,6 +12,10 @@ on:
           - patch
           - minor
           - major
+      force_release_charts:
+        description: 'Optional. Comma-separated list of chart names to force release (e.g. "argo-cd,argo-events").'
+        required: false
+        default: ''
 
 jobs:
   release:
@@ -50,14 +54,29 @@ jobs:
           # Find all directories with a Chart.yaml file
           chart_dirs=$(find . -name "Chart.yaml" -exec dirname {} \; | sort -u)
 
+          # Read the forced charts input into a bash array for easy checking
+          IFS=',' read -ra forced_charts <<< "${{ github.event.inputs.force_release_charts }}"
+
           for chart_dir in $chart_dirs; do
-            # Check for changes in the chart directory since the last tag.
-            if git diff --quiet "$latest_tag..HEAD" -- "$chart_dir"; then
-              echo "==> No changes for chart '$chart_dir'. Skipping."
-              continue
+            chart_name=$(basename "$chart_dir")
+            is_forced=false
+            for forced_chart in "${forced_charts[@]}"; do
+              # Trim whitespace from user input and compare
+              if [[ "$(echo "$forced_chart" | xargs)" == "$chart_name" ]]; then
+                is_forced=true
+                break
+              fi
+            done
+
+            # A chart should be released if it has changed OR it has been forced.
+            if [[ "$is_forced" == "true" ]]; then
+              echo "==> Forcing release for chart '$chart_name' as requested."
+            elif git diff --quiet "$latest_tag..HEAD" -- "$chart_dir"; then
+                echo "==> No changes for chart '$chart_name'. Skipping."
+                continue
             fi
 
-            echo "==> Changes detected for chart '$chart_dir'. Bumping version."
+            echo "==> Processing release for chart '$chart_dir'."
             
             # Read the current version from Chart.yaml
             current_version=$(yq e '.version' "$chart_dir/Chart.yaml")
