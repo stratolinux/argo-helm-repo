@@ -1,0 +1,115 @@
+name: Release Charts
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_bump_type:
+        description: 'Version bump type (major, minor, or patch)'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  release:
+    # This job requires write permissions to push the version bump
+    # and create a release.
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # We need full history to determine changes
+          fetch-depth: 0
+          # We need to push back the version bump
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install yq
+        uses: mikefarah/yq@v4.44.1
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump Chart Versions for Changed Charts
+        id: bump_charts
+        run: |
+          # Ensure we are on the correct branch before making changes
+          git checkout ${{ github.ref_name }}
+
+          # Get the latest tag to compare against. If no tags, use the first commit.
+          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)
+          echo "==> Finding chart changes since tag: $latest_tag"
+
+          # Find all directories with a Chart.yaml file
+          chart_dirs=$(find . -name "Chart.yaml" -exec dirname {} \; | sort -u)
+
+          for chart_dir in $chart_dirs; do
+            # Check for changes in the chart directory since the last tag.
+            if git diff --quiet "$latest_tag..HEAD" -- "$chart_dir"; then
+              echo "==> No changes for chart '$chart_dir'. Skipping."
+              continue
+            fi
+
+            echo "==> Changes detected for chart '$chart_dir'. Bumping version."
+            
+            # Read the current version from Chart.yaml
+            current_version=$(yq e '.version' "$chart_dir/Chart.yaml")
+            if [ -z "$current_version" ]; then
+              echo "Error: Could not read version from $chart_dir/Chart.yaml"
+              exit 1
+            fi
+            
+            # Use awk to increment the version based on the input type
+            new_version=$(echo "$current_version" | awk -F. -v type="${{ github.event.inputs.version_bump_type }}" '
+              {
+                if (type == "major") {
+                  $1++; $2=0; $3=0;
+                } else if (type == "minor") {
+                  $2++; $3=0;
+                } else {
+                  $3++;
+                }
+                printf "%d.%d.%d", $1, $2, $3;
+              }')
+            
+            echo "    Bumping '$chart_dir' from $current_version to $new_version"
+            
+            # Write the new version back to Chart.yaml
+            yq e -i ".version = \"$new_version\"" "$chart_dir/Chart.yaml"
+          done
+
+          # Check if any Chart.yaml files were modified by the loop
+          if git diff --quiet -- ./**/Chart.yaml; then
+            echo "==> No chart versions were bumped. Nothing to release."
+            echo "charts_changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "==> Chart versions were bumped. Proceeding to release."
+            echo "charts_changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Docs
+        if: steps.bump_charts.outputs.charts_changed == 'true'
+        uses: norwoodj/helm-docs-action@v1.11.3
+        with:
+          # We will commit and push in the next step
+          git-push: "false"
+
+      - name: Commit and Push Version Bumps
+        if: steps.bump_charts.outputs.charts_changed == 'true'
+        run: |
+          git add ./**/Chart.yaml ./**/README.md
+          git commit -m "chore(release): bump chart versions and update docs" -m "Bumps versions and regenerates READMEs for charts that have changed since the last tag."
+          git push
+
+      - name: Run Chart Releaser
+        if: steps.bump_charts.outputs.charts_changed == 'true'
+        uses: helm/chart-releaser-action@v1.6.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
