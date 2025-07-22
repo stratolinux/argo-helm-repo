@@ -96,7 +96,7 @@ jobs:
 
       - name: Generate Docs
         if: steps.bump_charts.outputs.charts_changed == 'true'
-        uses: norwoodj/helm-docs-action@v1.11.3
+        uses: losisin/helm-docs-github-action@v1
         with:
           # We will commit and push in the next step
           git-push: "false"
@@ -110,6 +110,6 @@ jobs:
 
       - name: Run Chart Releaser
         if: steps.bump_charts.outputs.charts_changed == 'true'
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: helm/chart-releaser-action@v1.7.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
