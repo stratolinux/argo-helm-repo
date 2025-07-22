@@ -3,7 +3,7 @@
 apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
-  name: scheduled-backuo
+  name: scheduled-backup
   namespace: longhorn-system
 spec:
   cron: "0,30 * * * *"
