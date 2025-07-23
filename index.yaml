@@ -24,6 +24,18 @@ entries:
     urls:
     - https://github.com/stratolinux/argo-helm-repo/releases/download/addons-config-0.3.1/addons-config-0.3.1.tgz
     version: 0.3.1
+  developer:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2025-07-23T13:42:17.10564123Z"
+    description: A Helm chart for development tools
+    digest: 19b8a1470405d4ac2737ddc8a3bc637625f74de8a09ab7a9480d48def6ebf922
+    icon: https://avatars.githubusercontent.com/u/25410597?s=96&v=4
+    name: developer
+    type: application
+    urls:
+    - https://github.com/stratolinux/argo-helm-repo/releases/download/developer-0.2.0/developer-0.2.0.tgz
+    version: 0.2.0
   static-volumes:
   - apiVersion: v2
     appVersion: 0.1.0
@@ -36,4 +48,4 @@ entries:
     urls:
     - https://github.com/stratolinux/argo-helm-repo/releases/download/static-volumes-0.3.1/static-volumes-0.3.1.tgz
     version: 0.3.1
-generated: "2025-07-22T19:17:37.731730566Z"
+generated: "2025-07-23T13:42:17.10564655Z"
