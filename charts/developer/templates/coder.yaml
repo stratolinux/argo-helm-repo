@@ -51,6 +51,8 @@ spec:
           ingress:
             enable: {{ .Values.developer.coder.ingress.enabled }}
             host: {{ .Values.developer.coder.ingress.host }}
+          service:
+            type: ClusterIP
 
   syncPolicy:
     automated:
