@@ -1,0 +1,103 @@
+{{ if .Values.developer.coder.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: coder
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.developer.coder.namespace }}
+  project: default
+  source:
+    repoURL: https://helm.coder.com/v2
+    chart: coder
+    targetRevision: {{ .Values.developer.coder.version }}
+    helm:
+      valuesObject:
+        coder:
+          # You can specify any environment variables you'd like to pass to Coder
+          # here. Coder consumes environment variables listed in
+          # `coder server --help`, and these environment variables are also passed
+          # to the workspace provisioner (so you can consume them in your Terraform
+          # templates for auth keys etc.).
+          #
+          # Please keep in mind that you should not set `CODER_HTTP_ADDRESS`,
+          # `CODER_TLS_ENABLE`, `CODER_TLS_CERT_FILE` or `CODER_TLS_KEY_FILE` as
+          # they are already set by the Helm chart and will cause conflicts.
+          env:
+            - name: CODER_PG_CONNECTION_URL
+              valueFrom:
+                secretKeyRef:
+                  # You'll need to create a secret called coder-db-url with your
+                  # Postgres connection URL like:
+                  # postgres://coder:password@postgres:5432/coder?sslmode=disable
+                  name: coder-db-url
+                  key: url
+            - name: CODER_EXTERNAL_AUTH_0_ID
+              value: {{ .Values.developer.coder.auth.id }}
+            - name: CODER_EXTERNAL_AUTH_0_TYPE
+              value: {{ .Values.developer.coder.auth.type }}
+            - name: CODER_EXTERNAL_AUTH_0_CLIENT_ID
+              value: {{ .Values.developer.coder.auth.client_id }}
+            - name: CODER_EXTERNAL_AUTH_0_CLIENT_SECRET
+              value: {{ .Values.developer.coder.auth.client_secret }}
+            # (Optional) For production deployments the access URL should be set.
+            # If you're just trying Coder, access the dashboard via the service IP.
+            - name: CODER_ACCESS_URL
+              value: "https://{{ .Values.developer.coder.ingress.host }}"
+          ingress:
+            enable: {{ .Values.developer.coder.ingress.enabled }}
+            host: {{ .Values.developer.coder.ingress.host }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+---
+apiVersion: v1
+kind: Secret
+type: Opaque             
+metadata:
+  name: coder-db-url
+  namespace: {{ .Values.developer.coder.namespace }}
+stringData:
+  url: postgres://{{ .Values.developer.coder.db.username }}:{{ .Values.developer.coder.db.password }}@coder-postgres-postgresql.coder.svc.cluster.local:5432/{{ .Values.developer.coder.db.database }}?sslmode=disable
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: coder-postgres
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: {{ .Values.developer.coder.namespace }}
+  project: default
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: postgresql
+    targetRevision: 16.7.21
+    helm:
+      valuesObject:
+        auth:
+          username: {{ .Values.developer.coder.db.username }}
+          password: {{ .Values.developer.coder.db.password }}
+          database: {{ .Values.developer.coder.db.database }}
+        persistence:
+          size: {{ .Values.developer.coder.db.size }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+{{ end }}

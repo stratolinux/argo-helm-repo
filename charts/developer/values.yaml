@@ -1,0 +1,41 @@
+# Default values
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+developer:
+  coder:
+    # -- flag to enable or disable coder
+    enabled: true
+    # -- version of coder-v2 helm chart from https://helm.coder.com/v2
+    version: "2.24.2"
+    # -- target namespace for coder
+    namespace: "coder"
+
+    auth:
+      # -- authorization id
+      id: "auth_id"
+      # -- authorization type
+      type: "github"
+      # -- authorization client id
+      client_id: "client_id"
+      # -- authorization client secret
+      client_secret: "client_secret"
+
+    ingress:
+      # -- flag to enable ingress for coder
+      enabled: true
+      # -- hostname for coder ingress
+      host: "your.host.name"
+
+    db:
+      # -- database user
+      username: "coder"
+      # -- database password
+      password: "coder"
+      # -- database name
+      database: "coder"
+      # -- database size
+      size: "10Gi"
+
+
+
