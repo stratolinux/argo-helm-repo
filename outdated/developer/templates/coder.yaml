@@ -1,20 +1,20 @@
-{{ if .Values.coder.enabled }}
+{{ if .Values.developer.coder.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: coder-server
+  name: coder
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     name: in-cluster
-    namespace: {{ .Values.coder.namespace }}
+    namespace: {{ .Values.developer.coder.namespace }}
   project: default
   source:
     repoURL: https://helm.coder.com/v2
     chart: coder
-    targetRevision: 2.12.1
+    targetRevision: {{ .Values.developer.coder.version }}
     helm:
       valuesObject:
         coder:
@@ -37,20 +37,20 @@ spec:
                   name: coder-db-url
                   key: url
             - name: CODER_EXTERNAL_AUTH_0_ID
-              value: "stratolinux-coder"
+              value: {{ .Values.developer.coder.auth.id }}
             - name: CODER_EXTERNAL_AUTH_0_TYPE
-              value: "github"
+              value: {{ .Values.developer.coder.auth.type }}
             - name: CODER_EXTERNAL_AUTH_0_CLIENT_ID
-              value: "Iv23likAATfG3DwbaxJB"
+              value: {{ .Values.developer.coder.auth.client_id }}
             - name: CODER_EXTERNAL_AUTH_0_CLIENT_SECRET
-              value: "60c5db84844f6f073b29b979a218766cd2baf97d"
+              value: {{ .Values.developer.coder.auth.client_secret }}
             # (Optional) For production deployments the access URL should be set.
             # If you're just trying Coder, access the dashboard via the service IP.
             - name: CODER_ACCESS_URL
-              value: "https://{{ .Values.coder.ingress.host }}"
+              value: "https://{{ .Values.developer.coder.ingress.host }}"
           ingress:
-            enable: {{ .Values.coder.ingress.enabled }}
-            host: {{ .Values.coder.ingress.host }}
+            enable: {{ .Values.developer.coder.ingress.enabled }}
+            host: {{ .Values.developer.coder.ingress.host }}
 
   syncPolicy:
     automated:
@@ -65,9 +65,9 @@ kind: Secret
 type: Opaque             
 metadata:
   name: coder-db-url
-  namespace: {{ .Values.coder.namespace }}
+  namespace: {{ .Values.developer.coder.namespace }}
 stringData:
-  url: postgres://coder:coder@coder-postgres-postgresql.coder.svc.cluster.local:5432/coder?sslmode=disable
+  url: postgres://{{ .Values.developer.coder.db.username }}:{{ .Values.developer.coder.db.password }}@coder-postgres-postgresql.coder.svc.cluster.local:5432/{{ .Values.developer.coder.db.database }}?sslmode=disable
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -79,20 +79,20 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: {{ .Values.coder.namespace }}
+    namespace: {{ .Values.developer.coder.namespace }}
   project: default
   source:
     repoURL: https://charts.bitnami.com/bitnami
     chart: postgresql
-    targetRevision: 15.5.9
+    targetRevision: 16.7.21
     helm:
       valuesObject:
         auth:
-          username: "coder"
-          password: "coder"
-          database: "coder"
+          username: {{ .Values.developer.coder.db.username }}
+          password: {{ .Values.developer.coder.db.password }}
+          database: {{ .Values.developer.coder.db.database }}
         persistence:
-          size: "10Gi"
+          size: {{ .Values.developer.coder.db.size }}
   syncPolicy:
     automated:
       prune: true
