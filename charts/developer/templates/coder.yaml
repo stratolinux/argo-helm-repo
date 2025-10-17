@@ -84,9 +84,9 @@ spec:
     namespace: {{ .Values.developer.coder.namespace }}
   project: default
   source:
-    repoURL: https://charts.bitnami.com/bitnami
-    chart: postgresql
-    targetRevision: 17.6.0
+    repoURL: oci://registry-1.docker.io/cloudpirates
+    chart: postgres
+    targetRevision: v0.10.0
     helm:
       valuesObject:
         auth:
