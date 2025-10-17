@@ -69,7 +69,7 @@ metadata:
   name: coder-db-url
   namespace: {{ .Values.developer.coder.namespace }}
 stringData:
-  url: postgres://{{ .Values.developer.coder.db.username }}:{{ .Values.developer.coder.db.password }}@coder-postgres-0.coder.svc.cluster.local:5432/{{ .Values.developer.coder.db.database }}?sslmode=disable
+  url: postgres://{{ .Values.developer.coder.db.username }}:{{ .Values.developer.coder.db.password }}@coder-postgres-0:5432/{{ .Values.developer.coder.db.database }}?sslmode=disable
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
