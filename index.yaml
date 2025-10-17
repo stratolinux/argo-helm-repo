@@ -27,6 +27,17 @@ entries:
   developer:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-10-17T02:09:41.922718322Z"
+    description: A Helm chart for development tools
+    digest: 313e979e596419f892adb1a09bf17ef60f9f85ad178be60d777d3a43dbd64d96
+    icon: https://avatars.githubusercontent.com/u/25410597?s=96&v=4
+    name: developer
+    type: application
+    urls:
+    - https://github.com/stratolinux/argo-helm-repo/releases/download/developer-0.2.10/developer-0.2.10.tgz
+    version: 0.2.10
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-10-17T02:06:27.676683695Z"
     description: A Helm chart for development tools
     digest: b43faf7d87e794321e04549ce81a1f49a6d548d76fb0dcd4568f2915df4940da
@@ -136,4 +147,4 @@ entries:
     urls:
     - https://github.com/stratolinux/argo-helm-repo/releases/download/static-volumes-0.3.1/static-volumes-0.3.1.tgz
     version: 0.3.1
-generated: "2025-10-17T02:06:27.676722758Z"
+generated: "2025-10-17T02:09:41.922759406Z"
