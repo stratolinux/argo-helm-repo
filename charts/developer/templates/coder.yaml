@@ -86,7 +86,7 @@ spec:
   source:
     repoURL: oci://registry-1.docker.io/cloudpirates/postgres
     path: .
-    targetRevision: v0.10.0
+    targetRevision: 0.10.0
     helm:
       valuesObject:
         auth:
