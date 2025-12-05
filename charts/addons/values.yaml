@@ -6,7 +6,7 @@ reflector:
   # -- flag to enable or disable the deployment of https://github.com/emberstack/kubernetes-reflector
   enabled: false
   # -- version of reflector helm chart from https://emberstack.github.io/helm-charts
-  version: "9.1.22"
+  version: "9.1.44"
   # -- target namespace for reflector
   namespace: kube-system
 
@@ -14,7 +14,7 @@ cert_manager:
   # -- flag to enable or disable cert-manager
   enabled: false
   # -- version of cert-manager helm chart from https://charts.jetstack.io
-  version: "v1.18.2"
+  version: "v1.19.1"
   # -- target namespace for cert-manager
   namespace: cert-manager
   # -- cloudflare email address
@@ -38,7 +38,7 @@ metallb:
   # -- target namespace for metallb
   namespace: metallb-system
   # -- version of the metallb chart from https://metallb.github.io/metallb
-  version: "v0.15.2"
+  version: "v0.15.3"
   # -- list of address ranges for automatically assignable addresses
   default_addresses:
     - 10.10.90.100-10.10.90.110
@@ -50,7 +50,7 @@ traefik:
   # -- flag to enable or disable traefik
   enabled: false
   # -- version of the traefik helm chart from https://traefik.github.io/charts
-  version: "36.3.0"
+  version: "37.4.0"
   # -- target namespace for traefik
   namespace: traefik
 
@@ -58,7 +58,7 @@ longhorn:
   # -- flag to enable or disable longhorn
   enabled: false
   # -- version of the longhorn helm chart from https://charts.longhorn.io
-  version: "1.9.0"
+  version: "1.10.1"
   # -- target namespace for longhorn
   namespace: longhorn-system
   backup:
