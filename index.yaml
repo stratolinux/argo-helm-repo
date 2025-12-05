@@ -3,6 +3,17 @@ entries:
   addons:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-12-05T21:07:48.919282777Z"
+    description: A Helm chart for basic K8s services
+    digest: e97acbbd154513bf25e326b220148b3e0addbc1d87108c0d8daea8adcbc691a2
+    icon: https://avatars.githubusercontent.com/u/25410597?s=96&v=4
+    name: addons
+    type: application
+    urls:
+    - https://github.com/stratolinux/argo-helm-repo/releases/download/addons-0.4.0/addons-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-07-22T19:17:37.419355884Z"
     description: A Helm chart for basic K8s services
     digest: 79a79d7745297717d86a084cff90c8e9140da59c7c4ec4edccb7bcfaadc85224
@@ -13,6 +24,17 @@ entries:
     - https://github.com/stratolinux/argo-helm-repo/releases/download/addons-0.3.1/addons-0.3.1.tgz
     version: 0.3.1
   addons-config:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2025-12-05T21:07:49.096224146Z"
+    description: A Helm chart basic K8s services
+    digest: 7cba2f75a23306a540dad69c371b06e5597180b0ccb144ed2c3c1229a9cdc06f
+    icon: https://avatars.githubusercontent.com/u/25410597?s=96&v=4
+    name: addons-config
+    type: application
+    urls:
+    - https://github.com/stratolinux/argo-helm-repo/releases/download/addons-config-0.4.0/addons-config-0.4.0.tgz
+    version: 0.4.0
   - apiVersion: v2
     appVersion: 0.1.0
     created: "2025-07-22T19:17:37.564785428Z"
@@ -147,4 +169,4 @@ entries:
     urls:
     - https://github.com/stratolinux/argo-helm-repo/releases/download/static-volumes-0.3.1/static-volumes-0.3.1.tgz
     version: 0.3.1
-generated: "2025-10-17T02:09:41.922759406Z"
+generated: "2025-12-05T21:07:49.096256673Z"
