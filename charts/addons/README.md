@@ -17,12 +17,6 @@ A Helm chart for basic K8s services
 | cert_manager.namespace | string | `"cert-manager"` | target namespace for cert-manager |
 | cert_manager.server | string | `"staging"` | LetsEncrypt server to use, should be `staging` or `production` |
 | cert_manager.version | string | `"v1.19.1"` | version of cert-manager helm chart from https://charts.jetstack.io |
-| longhorn.backup.location | string | `"nfs://host.name:/export/path"` | backup target for longhorn volumes, and optional secret with credentials |
-| longhorn.backup.secret | string | `""` | optional, existing, secret if neededd to access the backup location |
-| longhorn.enabled | bool | `false` | flag to enable or disable longhorn |
-| longhorn.ingress.host | string | `"myhostname.mydomain"` | hostname for ingress to the longhorn dasshboard |
-| longhorn.namespace | string | `"longhorn-system"` | target namespace for longhorn |
-| longhorn.version | string | `"1.10.1"` | version of the longhorn helm chart from https://charts.longhorn.io |
 | metallb.default_addresses | list | `["10.10.90.100-10.10.90.110"]` | list of address ranges for automatically assignable addresses |
 | metallb.enabled | bool | `false` | flag to enable or disable metallb |
 | metallb.namespace | string | `"metallb-system"` | target namespace for metallb |
