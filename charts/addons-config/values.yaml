@@ -53,20 +53,3 @@ traefik:
   version: "36.3.0"
   # -- target namespace for traefik
   namespace: traefik
-
-longhorn:
-  # -- flag to enable or disable longhorn
-  enabled: false
-  # -- version of the longhorn helm chart from https://charts.longhorn.io
-  version: "1.9.0"
-  # -- target namespace for longhorn
-  namespace: longhorn-system
-  backup:
-    # -- backup target for longhorn volumes, and optional secret with credentials
-    location: "nfs://host.name:/export/path"
-    # -- optional, existing, secret if neededd to access the backup location
-    secret: ""
-  ingress:
-    # -- hostname for ingress to the longhorn dasshboard
-    host: myhostname.mydomain
-
